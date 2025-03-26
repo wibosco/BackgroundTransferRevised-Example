@@ -11,27 +11,27 @@ import Foundation
 typealias BackgroundDownloadCompletion = (_ result: Result<URL, Error>) -> ()
 
 actor BackgroundDownloadStore {
-    private var inMemoryStore = [String: BackgroundDownloadCompletion]()
+    private var inMemoryStore = [String: CheckedContinuation<URL, Error>]()
     private let persistentStore = UserDefaults.standard
     
     // MARK: - Store
     
     func storeMetadata(from fromURL: URL,
                        to toURL: URL,
-                       completionHandler: @escaping BackgroundDownloadCompletion) {
-        inMemoryStore[fromURL.absoluteString] = completionHandler
+                       continuation: CheckedContinuation<URL, Error>) {
+        inMemoryStore[fromURL.absoluteString] = continuation
         persistentStore.set(toURL, forKey: fromURL.absoluteString)
     }
     
     // MARK: - Retrieve
     
-    func retrieveMetadata(for forURL: URL) -> (URL?, BackgroundDownloadCompletion?) {
+    func retrieveMetadata(for forURL: URL) -> (URL?, CheckedContinuation<URL, Error>?) {
         let key = forURL.absoluteString
         
         let toURL = persistentStore.url(forKey: key)
-        let completionHandler = inMemoryStore[key]
+        let continuation = inMemoryStore[key]
         
-        return (toURL, completionHandler)
+        return (toURL, continuation)
     }
     
     // MARK: - Remove

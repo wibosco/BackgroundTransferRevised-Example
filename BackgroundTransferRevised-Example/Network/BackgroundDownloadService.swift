@@ -52,18 +52,8 @@ class BackgroundDownloadService: NSObject, URLSessionDelegate {
                 os_log(.info, "Scheduling to download: %{public}@", fromURL.absoluteString)
                 
                 await store.storeMetadata(from: fromURL,
-                                    to: toURL) { result in
-                    os_log(.info, "Calling continuation on %{public}@", fromURL.absoluteString)
-                    
-                    switch result {
-                    case let .success(url):
-                        continuation.resume(returning: url)
-                    case let .failure(error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-                
-                // can i use func download(for request: URLRequest, delegate: (URLSessionTaskDelegate)? = nil) async throws -> (URL, URLResponse) instead?
+                                          to: toURL,
+                                          continuation: continuation)
                 
                 let downloadTask = session.downloadTask(with: fromURL)
                 downloadTask.earliestBeginDate = Date().addingTimeInterval(2) // Remove this in production, the delay was added for demonstration purposes only
@@ -100,17 +90,17 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
                 }
             }
             
-            let (toURL, completionHandler) = await store.retrieveMetadata(for: fromURL)
+            let (toURL, continuation) = await store.retrieveMetadata(for: fromURL)
             guard let toURL else {
                 os_log(.error, "Unable to find existing download item for: %{public}@", fromURLAsString)
-                completionHandler?(.failure(BackgroundDownloadError.missingInstructionsError))
+                continuation?.resume(throwing: BackgroundDownloadError.missingInstructionsError)
                 return
             }
             
             guard let response = downloadTask.response as? HTTPURLResponse,
                         response.statusCode == 200 else {
                 os_log(.error, "Unexpected response for: %{public}@", fromURLAsString)
-                completionHandler?(.failure(BackgroundDownloadError.serverError(downloadTask.response)))
+                continuation?.resume(throwing: BackgroundDownloadError.serverError(downloadTask.response))
                 return
             }
             
@@ -120,9 +110,9 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
                 try FileManager.default.moveItem(at: tempLocation,
                                                  to: toURL)
                 
-                completionHandler?(.success(toURL))
+                continuation?.resume(returning: toURL)
             } catch {
-                completionHandler?(.failure(BackgroundDownloadError.fileSystemError(error)))
+                continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
             }
         }
     }
@@ -144,8 +134,8 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
         os_log(.info, "Download failed for: %{public}@", fromURLAsString)
         
         Task {
-            let (_, completionHandler) = await store.retrieveMetadata(for: fromURL)
-            completionHandler?(.failure(BackgroundDownloadError.clientError(error)))
+            let (_, continuation) = await store.retrieveMetadata(for: fromURL)
+            continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
             
             await store.removeMetadata(for: fromURL)
         }
