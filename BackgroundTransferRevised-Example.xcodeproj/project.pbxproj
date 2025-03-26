@@ -10,8 +10,8 @@
 		436CC0972D808CC500F9E4E2 /* CatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436CC0952D808CC400F9E4E2 /* CatsViewModel.swift */; };
 		436CC0982D808CC500F9E4E2 /* CatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436CC0962D808CC400F9E4E2 /* CatsView.swift */; };
 		436CC09B2D8091D300F9E4E2 /* GridItem+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436CC09A2D8091D300F9E4E2 /* GridItem+Layout.swift */; };
-		437CD50A2D94BA8E00A909A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437CD5092D94BA8E00A909A6 /* AppDelegate.swift */; };
-		43D1CF532D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF522D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift */; };
+		437CD5102D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437CD50D2D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift */; };
+		437CD5112D94C62800A909A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437CD50E2D94C62800A909A6 /* AppDelegate.swift */; };
 		43D1CF5A2D80860E00AC1ED9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D1CF592D80860E00AC1ED9 /* Preview Assets.xcassets */; };
 		43D1CF642D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF632D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift */; };
 		43D1CF832D808A5000AC1ED9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D1CF7E2D808A5000AC1ED9 /* Assets.xcassets */; };
@@ -35,10 +35,11 @@
 		436CC0952D808CC400F9E4E2 /* CatsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatsViewModel.swift; sourceTree = "<group>"; };
 		436CC0962D808CC400F9E4E2 /* CatsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatsView.swift; sourceTree = "<group>"; };
 		436CC09A2D8091D300F9E4E2 /* GridItem+Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GridItem+Layout.swift"; sourceTree = "<group>"; };
-		437CD5092D94BA8E00A909A6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		437CD50B2D94BB3A00A909A6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		437CD50D2D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTransferRevised_ExampleApp.swift; sourceTree = "<group>"; };
+		437CD50E2D94C62800A909A6 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		437CD50F2D94C62800A909A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		437CD5132D94C66C00A909A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		43D1CF4F2D80860C00AC1ED9 /* BackgroundTransferRevised-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BackgroundTransferRevised-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		43D1CF522D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTransferRevised_ExampleApp.swift; sourceTree = "<group>"; };
 		43D1CF592D80860E00AC1ED9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		43D1CF5F2D80860E00AC1ED9 /* BackgroundTransferRevised-ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BackgroundTransferRevised-ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D1CF632D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTransferRevised_ExampleTests.swift; sourceTree = "<group>"; };
@@ -92,6 +93,16 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		437CD50C2D94C62800A909A6 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				437CD50D2D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift */,
+				437CD50E2D94C62800A909A6 /* AppDelegate.swift */,
+				437CD50F2D94C62800A909A6 /* Info.plist */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
 		43D1CF462D80860C00AC1ED9 = {
 			isa = PBXGroup;
 			children = (
@@ -113,14 +124,12 @@
 		43D1CF512D80860C00AC1ED9 /* BackgroundTransferRevised-Example */ = {
 			isa = PBXGroup;
 			children = (
-				437CD50B2D94BB3A00A909A6 /* Info.plist */,
+				437CD50C2D94C62800A909A6 /* Application */,
 				436CC0992D8091D300F9E4E2 /* Extensions */,
 				436CC0932D808CC400F9E4E2 /* Features */,
 				43D1CF7F2D808A5000AC1ED9 /* Network */,
 				43D1CF7C2D808A5000AC1ED9 /* Resources */,
-				43D1CF522D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift */,
 				43D1CF582D80860E00AC1ED9 /* Preview Content */,
-				437CD5092D94BA8E00A909A6 /* AppDelegate.swift */,
 			);
 			path = "BackgroundTransferRevised-Example";
 			sourceTree = "<group>";
@@ -136,6 +145,7 @@
 		43D1CF622D80860E00AC1ED9 /* BackgroundTransferRevised-ExampleTests */ = {
 			isa = PBXGroup;
 			children = (
+				437CD5132D94C66C00A909A6 /* Info.plist */,
 				43D1CF632D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift */,
 			);
 			path = "BackgroundTransferRevised-ExampleTests";
@@ -268,14 +278,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43D1CF532D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift in Sources */,
+				437CD5112D94C62800A909A6 /* AppDelegate.swift in Sources */,
 				436CC0972D808CC500F9E4E2 /* CatsViewModel.swift in Sources */,
 				43D1CF852D808A5000AC1ED9 /* NetworkService.swift in Sources */,
-				437CD50A2D94BA8E00A909A6 /* AppDelegate.swift in Sources */,
 				436CC0982D808CC500F9E4E2 /* CatsView.swift in Sources */,
 				436CC09B2D8091D300F9E4E2 /* GridItem+Layout.swift in Sources */,
 				43E208BA2D942444006B7E12 /* BackgroundDownloadStore.swift in Sources */,
 				43E208BB2D942444006B7E12 /* BackgroundDownloadService.swift in Sources */,
+				437CD5102D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift in Sources */,
 				43D1CF842D808A5000AC1ED9 /* ImageLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -428,7 +438,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"BackgroundTransferRevised-Example/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "BackgroundTransferRevised-Example/Info.plist";
+				INFOPLIST_FILE = "BackgroundTransferRevised-Example/Application/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -441,9 +451,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.williamboles.BackgroundTransferRevised-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -457,7 +471,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"BackgroundTransferRevised-Example/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "BackgroundTransferRevised-Example/Info.plist";
+				INFOPLIST_FILE = "BackgroundTransferRevised-Example/Application/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -470,9 +484,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.williamboles.BackgroundTransferRevised-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -483,14 +501,19 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "BackgroundTransferRevised-ExampleTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.williamboles.BackgroundTransferRevised-ExampleTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BackgroundTransferRevised-Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BackgroundTransferRevised-Example";
 			};
 			name = Debug;
@@ -502,14 +525,19 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "BackgroundTransferRevised-ExampleTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.williamboles.BackgroundTransferRevised-ExampleTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BackgroundTransferRevised-Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BackgroundTransferRevised-Example";
 			};
 			name = Release;
