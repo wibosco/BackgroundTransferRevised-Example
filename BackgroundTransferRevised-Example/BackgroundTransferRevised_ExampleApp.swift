@@ -11,7 +11,8 @@ import SwiftUI
 struct BackgroundTransferRevised_ExampleApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            let catsViewModel = CatsViewModel()
+            CatsView(viewModel: catsViewModel)
         }
     }
 }
