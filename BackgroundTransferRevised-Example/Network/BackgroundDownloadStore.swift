@@ -2,13 +2,11 @@
 //  BackgroundDownloadStore.swift
 //  BackgroundTransfer-Example
 //
-//  Created by William Boles on 02/05/2018.
-//  Copyright © 2018 William Boles. All rights reserved.
+//  Created by William Boles on 26/03/2025.
+//  Copyright © 2025 William Boles. All rights reserved.
 //
 
 import Foundation
-
-typealias BackgroundDownloadCompletion = (_ result: Result<URL, Error>) -> ()
 
 actor BackgroundDownloadStore {
     private var inMemoryStore = [String: CheckedContinuation<URL, Error>]()
@@ -19,8 +17,10 @@ actor BackgroundDownloadStore {
     func storeMetadata(from fromURL: URL,
                        to toURL: URL,
                        continuation: CheckedContinuation<URL, Error>) {
-        inMemoryStore[fromURL.absoluteString] = continuation
-        persistentStore.set(toURL, forKey: fromURL.absoluteString)
+        let key = fromURL.absoluteString
+        
+        inMemoryStore[key] = continuation
+        persistentStore.set(toURL, forKey: key)
     }
     
     // MARK: - Retrieve

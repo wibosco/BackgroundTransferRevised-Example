@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import os
+import OSLog
 
 struct Cat: Decodable, Equatable {
     let id: String
@@ -20,6 +20,8 @@ enum NetworkServiceError: Error {
 }
 
 class NetworkService {
+    private let logger = Logger(subsystem: "com.williamboles", category: "NetworkService")
+    
     // MARK: - Cats
     
     func retrieveCats() async throws -> [Cat] {
@@ -46,7 +48,8 @@ class NetworkService {
         urlRequest.httpMethod = "GET"
         urlRequest.addValue(APIKey, forHTTPHeaderField: "x-api-key")
         
-        os_log(.error, "Retrieving cats...")
+        
+        logger.info("Retrieving cats...")
         
         do {
             let (data, response) = try await URLSession.shared.data(for: urlRequest)
@@ -59,7 +62,7 @@ class NetworkService {
                 throw NetworkServiceError.decodingErrror
             }
             
-            os_log(.error, "Cats successfully retrieved!")
+            logger.info("Cats successfully retrieved!")
             
            return cats
         } catch let error as NetworkServiceError {

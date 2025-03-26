@@ -2,12 +2,12 @@
 //  BackgroundDownloadService.swift
 //  BackgroundTransfer-Example
 //
-//  Created by William Boles on 02/05/2018.
-//  Copyright © 2018 William Boles. All rights reserved.
+//  Created by William Boles on 26/03/2025.
+//  Copyright © 2025 William Boles. All rights reserved.
 //
 
 import Foundation
-import os
+import OSLog
 
 enum BackgroundDownloadError: Error {
     case missingInstructionsError
@@ -18,45 +18,40 @@ enum BackgroundDownloadError: Error {
 
 class BackgroundDownloadService: NSObject, URLSessionDelegate {
     var backgroundCompletionHandler: (() -> Void)?
-    
+
+    static let identifier = "com.williamboles.background.download.session"
+
     private var session: URLSession!
     private let store = BackgroundDownloadStore()
-    
+
+    private let logger = Logger(subsystem: "com.williamboles", category: "BackgroundDownloadService")
+
     // MARK: - Singleton
-    
     static let shared = BackgroundDownloadService()
-    
+
     // MARK: - Init
-    
     override init() {
         super.init()
-        
         configureSession()
     }
-    
+
     private func configureSession() {
-        let configuration = URLSessionConfiguration.background(withIdentifier: "com.williamboles.background.download.session")
+        let configuration = URLSessionConfiguration.background(withIdentifier: BackgroundDownloadService.identifier)
+        configuration.isDiscretionary = false
         configuration.sessionSendsLaunchEvents = true
-        let session = URLSession(configuration: configuration,
-                                 delegate: self,
-                                 delegateQueue: nil)
-        self.session = session
+        self.session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
     }
-    
+
     // MARK: - Download
-    
-    func download(from fromURL: URL,
-                  to toURL: URL) async throws -> URL {
+    func download(from fromURL: URL, to toURL: URL) async throws -> URL {
         return try await withCheckedThrowingContinuation { continuation in
             Task {
-                os_log(.info, "Scheduling to download: %{public}@", fromURL.absoluteString)
-                
-                await store.storeMetadata(from: fromURL,
-                                          to: toURL,
-                                          continuation: continuation)
-                
+                logger.info("Scheduling download: \(fromURL.absoluteString)")
+
+                await store.storeMetadata(from: fromURL, to: toURL, continuation: continuation)
+
                 let downloadTask = session.downloadTask(with: fromURL)
-                downloadTask.earliestBeginDate = Date().addingTimeInterval(2) // Remove this in production, the delay was added for demonstration purposes only
+                downloadTask.earliestBeginDate = Date().addingTimeInterval(10) // Demonstration delay
                 downloadTask.resume()
             }
         }
@@ -64,88 +59,69 @@ class BackgroundDownloadService: NSObject, URLSessionDelegate {
 }
 
 // MARK: - URLSessionDownloadDelegate
-
 extension BackgroundDownloadService: URLSessionDownloadDelegate {
-    func urlSession(_ session: URLSession,
-                    downloadTask: URLSessionDownloadTask,
-                    didFinishDownloadingTo location: URL) {
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         guard let fromURL = downloadTask.originalRequest?.url else {
-            os_log(.error, "Unexpected nil URL")
-            // Unable to call the closure here as we use fromURL as the key to retrieve the closure
+            logger.error("Unexpected nil URL for download task.")
             return
         }
-        
-        let fromURLAsString = fromURL.absoluteString
-        
-        os_log(.info, "Download request completed for: %{public}@", fromURLAsString)
-        
+
+        logger.info("Download request completed for: \(fromURL.absoluteString)")
+
         let tempLocation = FileManager.default.temporaryDirectory.appendingPathComponent(location.lastPathComponent)
-        try? FileManager.default.moveItem(at: location,
-                                          to: tempLocation)
-        
+        try? FileManager.default.moveItem(at: location, to: tempLocation)
+
         Task {
             defer {
                 Task {
                     await store.removeMetadata(for: fromURL)
                 }
             }
-            
+
             let (toURL, continuation) = await store.retrieveMetadata(for: fromURL)
             guard let toURL else {
-                os_log(.error, "Unable to find existing download item for: %{public}@", fromURLAsString)
+                logger.error("Unable to find existing download item for: \(fromURL.absoluteString)")
                 continuation?.resume(throwing: BackgroundDownloadError.missingInstructionsError)
                 return
             }
-            
-            guard let response = downloadTask.response as? HTTPURLResponse,
-                        response.statusCode == 200 else {
-                os_log(.error, "Unexpected response for: %{public}@", fromURLAsString)
+
+            guard let response = downloadTask.response as? HTTPURLResponse, response.statusCode == 200 else {
+                logger.error("Unexpected response for: \(fromURL.absoluteString)")
                 continuation?.resume(throwing: BackgroundDownloadError.serverError(downloadTask.response))
                 return
             }
-            
-            os_log(.info, "Download successful for: %{public}@", fromURLAsString)
-            
+
+            logger.info("Download successful for: \(fromURL.absoluteString)")
+
             do {
-                try FileManager.default.moveItem(at: tempLocation,
-                                                 to: toURL)
-                
+                try FileManager.default.moveItem(at: tempLocation, to: toURL)
                 continuation?.resume(returning: toURL)
             } catch {
+                logger.error("File system error while moving file: \(error.localizedDescription)")
                 continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
             }
         }
     }
-    
-    func urlSession(_ session: URLSession,
-                    task: URLSessionTask,
-                    didCompleteWithError error: Error?) {
-        guard let error = error else {
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        guard let error = error, let fromURL = task.originalRequest?.url else {
             return
         }
-        
-        guard let fromURL = task.originalRequest?.url else {
-            os_log(.error, "Unexpected nil URL")
-            return
-        }
-        
-        let fromURLAsString = fromURL.absoluteString
-        
-        os_log(.info, "Download failed for: %{public}@", fromURLAsString)
-        
+
+        logger.info("Download failed for: \(fromURL.absoluteString), error: \(error.localizedDescription)")
+
         Task {
             let (_, continuation) = await store.retrieveMetadata(for: fromURL)
             continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
-            
             await store.removeMetadata(for: fromURL)
         }
     }
-    
+
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        DispatchQueue.main.async {
-            // needs to be called on the main queue
+        Task { @MainActor in
             self.backgroundCompletionHandler?()
             self.backgroundCompletionHandler = nil
         }
     }
 }
+
