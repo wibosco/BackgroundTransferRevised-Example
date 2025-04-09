@@ -15,7 +15,13 @@ enum ImageLoaderError: Error {
 }
 
 actor ImageLoader {
-    private let backgroundDownloader = BackgroundDownloadService()
+    private let backgroundDownloader: BackgroundDownloadService
+    
+    // MARK: - Init
+    
+    init() {
+        self.backgroundDownloader = BackgroundDownloadService()
+    }
     
     // MARK: - Load
     

@@ -20,8 +20,14 @@ enum NetworkServiceError: Error {
 }
 
 actor NetworkService {
-    private let logger = Logger(subsystem: "com.williamboles",
-                                category: "NetworkService")
+    private let logger: Logger
+    
+    // MARK: - Init
+    
+    init() {
+        self.logger = Logger(subsystem: "com.williamboles",
+                             category: "NetworkService")
+    }
     
     // MARK: - Cats
     
@@ -48,7 +54,6 @@ actor NetworkService {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.addValue(APIKey, forHTTPHeaderField: "x-api-key")
-        
         
         logger.info("Retrieving cats...")
         

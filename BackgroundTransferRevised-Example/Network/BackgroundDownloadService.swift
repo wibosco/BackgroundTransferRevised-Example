@@ -8,6 +8,7 @@
 
 import Foundation
 import OSLog
+import UIKit
 
 enum BackgroundDownloadError: Error {
     case missingInstructionsError
@@ -59,8 +60,6 @@ actor BackgroundDownloadService {
 }
 
 final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
-//    var backgroundCompletionHandler: (() -> Void)? // TODO: Should this be reversed so that the app delegate is called instead?
-    
     private let store: BackgroundDownloadStore
     private let logger: Logger
     
@@ -132,10 +131,11 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
     }
 
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-//        Task { @MainActor in
-//            self.backgroundCompletionHandler?()
-//            self.backgroundCompletionHandler = nil
-//        }
+        Task { @MainActor in
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                appDelegate.backgroundDownloadsComplete()
+            }
+        }
     }
 }
 

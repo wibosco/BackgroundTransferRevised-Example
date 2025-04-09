@@ -30,7 +30,7 @@ struct CatsView: View {
                                     CatImageCell(viewModel: catViewModel)
                                         .frame(width: sideLength, height: sideLength)
                                         .task {
-                                            catViewModel.loadImage()
+                                            await catViewModel.loadImage()
                                         }
                                 }
                             }

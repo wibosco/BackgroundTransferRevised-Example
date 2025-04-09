@@ -64,10 +64,10 @@ class CatViewModel: ObservableObject, Identifiable {
     
     // MARK: - Image
     
-    func loadImage() {
+    func loadImage() async {
         state = .retrieving
         
-        Task {
+//        Task {
             let uiImage = try? await imageLoader.loadImage(name: cat.id,
                                                            url: cat.url)
             
@@ -77,6 +77,6 @@ class CatViewModel: ObservableObject, Identifiable {
             }
             
             state = .retrieved(Image(uiImage: uiImage))
-        }
+//        }
     }
 }

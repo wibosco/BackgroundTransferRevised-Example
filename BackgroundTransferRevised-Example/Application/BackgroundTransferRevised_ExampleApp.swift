@@ -13,7 +13,8 @@ struct BackgroundTransferRevised_ExampleApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    private let logger = Logger(subsystem: "com.williamboles", category: "app")
+    private let logger = Logger(subsystem: "com.williamboles",
+                                category: "app")
 
     
     var body: some Scene {

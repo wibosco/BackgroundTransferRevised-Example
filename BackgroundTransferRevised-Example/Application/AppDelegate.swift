@@ -8,11 +8,18 @@
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+    private var backgroundCompletionHandler: (() -> Void)?
+    
     // MARK: - Background
     
     func application(_ application: UIApplication,
                      handleEventsForBackgroundURLSession identifier: String,
                      completionHandler: @escaping () -> Void) {
-//        BackgroundDownloadService.shared.backgroundCompletionHandler = completionHandler
+        self.backgroundCompletionHandler = completionHandler
+    }
+    
+    func backgroundDownloadsComplete() {
+        self.backgroundCompletionHandler?()
+        self.backgroundCompletionHandler = nil
     }
 }
