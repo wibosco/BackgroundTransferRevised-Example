@@ -16,22 +16,16 @@ enum BackgroundDownloadError: Error {
     case serverError(_ underlyingResponse: URLResponse?)
 }
 
-final class BackgroundDownloadService {
-    var backgroundCompletionHandler: (() -> Void)? // TODO: Remove this as it has now been moved to delegator
-
+actor BackgroundDownloadService {
     private static let identifier = "com.williamboles.background.download.session"
     private let session: URLSession
     private let store: BackgroundDownloadStore
     private let logger: Logger
 
-    // MARK: - Singleton
-    
-    static let shared = BackgroundDownloadService()
-
     // MARK: - Init
     
-    private init() {
-        self.store = BackgroundDownloadStore()
+    init() {
+        self.store = BackgroundDownloadStore.shared
         self.logger = Logger(subsystem: "com.williamboles",
                              category: "BackgroundDownload")
         
@@ -47,31 +41,27 @@ final class BackgroundDownloadService {
 
     // MARK: - Download
     
-    func download(from fromURL: URL, to toURL: URL) async throws -> URL {
+    func download(from fromURL: URL,
+                  to toURL: URL) async throws -> URL {
         return try await withCheckedThrowingContinuation { continuation in
             logger.info("Scheduling download: \(fromURL.absoluteString)")
             
-            Task {
+            Task { [store, fromURL, toURL, continuation] in
                 await store.storeMetadata(from: fromURL,
                                           to: toURL,
                                           continuation: continuation)
-                
-                logger.info("Metadata stored for: \(fromURL.absoluteString)")
             }
             
             let downloadTask = session.downloadTask(with: fromURL)
             downloadTask.resume()
-            
-            logger.info("Download resumed for: \(fromURL.absoluteString)")
         }
     }
 }
 
 final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
-    var backgroundCompletionHandler: (() -> Void)? // TODO: Should this be reversed so that the app delegate is called instead?
+//    var backgroundCompletionHandler: (() -> Void)? // TODO: Should this be reversed so that the app delegate is called instead?
     
     private let store: BackgroundDownloadStore
-    
     private let logger: Logger
     
     // MARK: - Init
@@ -94,8 +84,6 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
 
         let tempLocation = FileManager.default.temporaryDirectory.appendingPathComponent(location.lastPathComponent)
         try? FileManager.default.moveItem(at: location, to: tempLocation)
-        
-        logger.info("Moved file to temporary location: \(tempLocation) for: \(fromURL.absoluteString)")
 
         Task {
             defer {
@@ -144,10 +132,10 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
     }
 
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        Task { @MainActor in
-            self.backgroundCompletionHandler?()
-            self.backgroundCompletionHandler = nil
-        }
+//        Task { @MainActor in
+//            self.backgroundCompletionHandler?()
+//            self.backgroundCompletionHandler = nil
+//        }
     }
 }
 

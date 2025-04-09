@@ -19,8 +19,9 @@ enum NetworkServiceError: Error {
     case decodingErrror
 }
 
-class NetworkService {
-    private let logger = Logger(subsystem: "com.williamboles", category: "NetworkService")
+actor NetworkService {
+    private let logger = Logger(subsystem: "com.williamboles",
+                                category: "NetworkService")
     
     // MARK: - Cats
     

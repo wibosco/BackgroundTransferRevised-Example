@@ -14,8 +14,8 @@ enum ImageLoaderError: Error {
     case invalidImageData
 }
 
-class ImageLoader {
-    private let backgroundDownloader = BackgroundDownloadService.shared
+actor ImageLoader {
+    private let backgroundDownloader = BackgroundDownloadService()
     
     // MARK: - Load
     

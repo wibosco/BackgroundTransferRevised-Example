@@ -9,8 +9,19 @@
 import Foundation
 
 actor BackgroundDownloadStore {
-    private var inMemoryStore = [String: CheckedContinuation<URL, Error>]()
-    private let persistentStore = UserDefaults.standard
+    private var inMemoryStore: [String: CheckedContinuation<URL, Error>]
+    private let persistentStore: UserDefaults
+    
+    // MARK: - Singleton
+    
+    static let shared = BackgroundDownloadStore()
+    
+    // MARK: - Init
+    
+    private init() {
+        self.inMemoryStore = [String: CheckedContinuation<URL, Error>]()
+        self.persistentStore = UserDefaults.standard
+    }
     
     // MARK: - Store
     
