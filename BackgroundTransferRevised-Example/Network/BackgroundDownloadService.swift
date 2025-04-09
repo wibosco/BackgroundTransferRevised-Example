@@ -18,7 +18,6 @@ enum BackgroundDownloadError: Error {
 }
 
 actor BackgroundDownloadService {
-    private static let identifier = "com.williamboles.background.download.session"
     private let session: URLSession
     private let store: BackgroundDownloadStore
     private let logger: Logger
@@ -32,7 +31,7 @@ actor BackgroundDownloadService {
         
         let delegator = BackgroundDownloadDelegator(store: store,
                                                     logger: logger)
-        let configuration = URLSessionConfiguration.background(withIdentifier: BackgroundDownloadService.identifier)
+        let configuration = URLSessionConfiguration.background(withIdentifier: "com.williamboles.background.download.session")
         configuration.isDiscretionary = false
         configuration.sessionSendsLaunchEvents = true
         self.session = URLSession(configuration: configuration,
