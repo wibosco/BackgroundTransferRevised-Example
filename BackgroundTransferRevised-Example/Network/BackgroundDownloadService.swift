@@ -27,7 +27,7 @@ actor BackgroundDownloadService {
     init() {
         self.store = BackgroundDownloadStore.shared
         self.logger = Logger(subsystem: "com.williamboles",
-                             category: "BackgroundDownload")
+                             category: "background.download")
         
         let delegator = BackgroundDownloadDelegator(store: store,
                                                     logger: logger)

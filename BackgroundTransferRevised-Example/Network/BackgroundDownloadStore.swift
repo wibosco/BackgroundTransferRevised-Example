@@ -50,7 +50,7 @@ actor BackgroundDownloadStore {
     func removeMetadata(for forURL: URL) {
         let key = forURL.absoluteString
         
-        inMemoryStore[key] = nil
+        inMemoryStore.removeValue(forKey: key)
         persistentStore.removeObject(forKey: key)
     }
 }
