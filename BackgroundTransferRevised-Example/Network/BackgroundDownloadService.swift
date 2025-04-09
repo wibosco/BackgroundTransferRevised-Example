@@ -16,7 +16,7 @@ enum BackgroundDownloadError: Error {
     case serverError(_ underlyingResponse: URLResponse?)
 }
 
-class BackgroundDownloadService: NSObject, URLSessionDelegate {
+final class BackgroundDownloadService: NSObject {
     var backgroundCompletionHandler: (() -> Void)?
 
     static let identifier = "com.williamboles.background.download.session"
@@ -39,21 +39,28 @@ class BackgroundDownloadService: NSObject, URLSessionDelegate {
         let configuration = URLSessionConfiguration.background(withIdentifier: BackgroundDownloadService.identifier)
         configuration.isDiscretionary = false
         configuration.sessionSendsLaunchEvents = true
-        self.session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+        self.session = URLSession(configuration: configuration,
+                                  delegate: self,
+                                  delegateQueue: nil)
     }
 
     // MARK: - Download
     func download(from fromURL: URL, to toURL: URL) async throws -> URL {
         return try await withCheckedThrowingContinuation { continuation in
+            logger.info("Scheduling download: \(fromURL.absoluteString)")
+            
             Task {
-                logger.info("Scheduling download: \(fromURL.absoluteString)")
-
-                await store.storeMetadata(from: fromURL, to: toURL, continuation: continuation)
-
-                let downloadTask = session.downloadTask(with: fromURL)
-                downloadTask.earliestBeginDate = Date().addingTimeInterval(10) // Demonstration delay
-                downloadTask.resume()
+                await store.storeMetadata(from: fromURL,
+                                          to: toURL,
+                                          continuation: continuation)
+                
+                logger.info("Metadata stored for: \(fromURL.absoluteString)")
             }
+            
+            let downloadTask = session.downloadTask(with: fromURL)
+            downloadTask.resume()
+            
+            logger.info("Download resumed for: \(fromURL.absoluteString)")
         }
     }
 }
@@ -70,6 +77,8 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
 
         let tempLocation = FileManager.default.temporaryDirectory.appendingPathComponent(location.lastPathComponent)
         try? FileManager.default.moveItem(at: location, to: tempLocation)
+        
+        logger.info("Moved file to temporary location: \(tempLocation) for: \(fromURL.absoluteString)")
 
         Task {
             defer {
