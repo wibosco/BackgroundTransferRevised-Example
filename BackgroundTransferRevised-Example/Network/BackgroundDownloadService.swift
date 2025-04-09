@@ -16,35 +16,37 @@ enum BackgroundDownloadError: Error {
     case serverError(_ underlyingResponse: URLResponse?)
 }
 
-final class BackgroundDownloadService: NSObject {
-    var backgroundCompletionHandler: (() -> Void)?
+final class BackgroundDownloadService {
+    var backgroundCompletionHandler: (() -> Void)? // TODO: Remove this as it has now been moved to delegator
 
-    static let identifier = "com.williamboles.background.download.session"
-
-    private var session: URLSession!
-    private let store = BackgroundDownloadStore()
-
-    private let logger = Logger(subsystem: "com.williamboles", category: "BackgroundDownloadService")
+    private static let identifier = "com.williamboles.background.download.session"
+    private let session: URLSession
+    private let store: BackgroundDownloadStore
+    private let logger: Logger
 
     // MARK: - Singleton
+    
     static let shared = BackgroundDownloadService()
 
     // MARK: - Init
-    override init() {
-        super.init()
-        configureSession()
-    }
-
-    private func configureSession() {
+    
+    private init() {
+        self.store = BackgroundDownloadStore()
+        self.logger = Logger(subsystem: "com.williamboles",
+                             category: "BackgroundDownload")
+        
+        let delegator = BackgroundDownloadDelegator(store: store,
+                                                    logger: logger)
         let configuration = URLSessionConfiguration.background(withIdentifier: BackgroundDownloadService.identifier)
         configuration.isDiscretionary = false
         configuration.sessionSendsLaunchEvents = true
         self.session = URLSession(configuration: configuration,
-                                  delegate: self,
+                                  delegate: delegator,
                                   delegateQueue: nil)
     }
 
     // MARK: - Download
+    
     func download(from fromURL: URL, to toURL: URL) async throws -> URL {
         return try await withCheckedThrowingContinuation { continuation in
             logger.info("Scheduling download: \(fromURL.absoluteString)")
@@ -65,8 +67,23 @@ final class BackgroundDownloadService: NSObject {
     }
 }
 
-// MARK: - URLSessionDownloadDelegate
-extension BackgroundDownloadService: URLSessionDownloadDelegate {
+final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
+    var backgroundCompletionHandler: (() -> Void)? // TODO: Should this be reversed so that the app delegate is called instead?
+    
+    private let store: BackgroundDownloadStore
+    
+    private let logger: Logger
+    
+    // MARK: - Init
+    
+    init(store: BackgroundDownloadStore,
+         logger: Logger) {
+        self.store = store
+        self.logger = logger
+    }
+
+    // MARK: - URLSessionDownloadDelegate
+   
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         guard let fromURL = downloadTask.originalRequest?.url else {
             logger.error("Unexpected nil URL for download task.")
