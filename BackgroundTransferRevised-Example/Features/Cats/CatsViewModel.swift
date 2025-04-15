@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import UIKit
-import OSLog
 
 @MainActor
 class CatsViewModel: ObservableObject {
@@ -34,7 +33,6 @@ class CatsViewModel: ObservableObject {
             let viewModels = cats.map { CatViewModel(cat: $0) }
             state = .retrieved(viewModels)
         } catch {
-            os_log(.error, "Error when retrieving json: %{public}@", error.localizedDescription)
             state = .failed
         }
     }
@@ -67,16 +65,14 @@ class CatViewModel: ObservableObject, Identifiable {
     func loadImage() async {
         state = .retrieving
         
-//        Task {
-            let uiImage = try? await imageLoader.loadImage(name: cat.id,
-                                                           url: cat.url)
-            
-            guard let uiImage else {
-                state = .empty
-                return
-            }
-            
-            state = .retrieved(Image(uiImage: uiImage))
-//        }
+        let uiImage = try? await imageLoader.loadImage(name: cat.id,
+                                                       url: cat.url)
+        
+        guard let uiImage else {
+            state = .empty
+            return
+        }
+        
+        state = .retrieved(Image(uiImage: uiImage))
     }
 }

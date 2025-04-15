@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import OSLog
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    private var backgroundCompletionHandler: (() -> Void)?
+    static var shared: AppDelegate?
     
+    private var backgroundCompletionHandler: (() -> Void)?
+                    
     // MARK: - Background
     
     func application(_ application: UIApplication,
@@ -19,7 +22,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
     
     func backgroundDownloadsComplete() {
-        self.backgroundCompletionHandler?()
-        self.backgroundCompletionHandler = nil
+        backgroundCompletionHandler?()
+        backgroundCompletionHandler = nil
     }
 }

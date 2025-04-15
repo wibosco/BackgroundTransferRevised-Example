@@ -9,6 +9,7 @@
 import Foundation
 import OSLog
 import UIKit
+import SwiftUI
 
 enum BackgroundDownloadError: Error {
     case missingInstructionsError
@@ -21,7 +22,13 @@ actor BackgroundDownloadService {
     private let session: URLSession
     private let store: BackgroundDownloadStore
     private let logger: Logger
-
+    
+    var backgroundCompletionHandler: (() -> Void)?
+    
+    // MARK: - Singleton
+    
+    static let shared = BackgroundDownloadService()
+    
     // MARK: - Init
     
     init() {
@@ -51,8 +58,9 @@ actor BackgroundDownloadService {
                                           to: toURL,
                                           continuation: continuation)
             }
-            
+
             let downloadTask = session.downloadTask(with: fromURL)
+            downloadTask.earliestBeginDate = Date().addingTimeInterval(10) // Remove this in production, the delay was added for demonstration purposes only
             downloadTask.resume()
         }
     }
@@ -130,10 +138,15 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
     }
 
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+        logger.info("Did finish events for background session")
+        
         Task { @MainActor in
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                appDelegate.backgroundDownloadsComplete()
+            guard let appDelegate = AppDelegate.shared else {
+                logger.error("App delegate is nil")
+                return
             }
+            
+            appDelegate.backgroundDownloadsComplete()
         }
     }
 }

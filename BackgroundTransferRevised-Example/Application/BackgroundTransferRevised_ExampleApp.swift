@@ -17,6 +17,14 @@ struct BackgroundTransferRevised_ExampleApp: App {
                                 category: "app")
 
     
+    // MARK: - Init
+    
+    init() {
+        AppDelegate.shared = appDelegate
+    }
+    
+    // MARK: - Scene
+    
     var body: some Scene {
         WindowGroup {
             let catsViewModel = CatsViewModel()
@@ -27,7 +35,7 @@ struct BackgroundTransferRevised_ExampleApp: App {
                 return
             }
             
-            logger.info("Scheduling download: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].absoluteString)")
+            logger.info("Files will be downloaded to: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].absoluteString)")
 
             //Exit app to test restoring app from a terminated state. Comment out to test restoring app from a suspended state.
             Task {
