@@ -23,12 +23,6 @@ actor BackgroundDownloadService {
     private let store: BackgroundDownloadStore
     private let logger: Logger
     
-    var backgroundCompletionHandler: (() -> Void)?
-    
-    // MARK: - Singleton
-    
-    static let shared = BackgroundDownloadService()
-    
     // MARK: - Init
     
     init() {
@@ -66,16 +60,46 @@ actor BackgroundDownloadService {
     }
 }
 
+actor ProcessingDownloadsStore {
+    private var processingDownloads = [String: Task<Void, Never>]()
+    
+    // MARK: - Add
+    
+    func store(from fromURL: URL,
+               task: Task<Void, Never>) {
+        let key = fromURL.absoluteString
+        
+        processingDownloads[key] = task
+    }
+    
+    // MARK: - Retrieve
+    
+    func retrieveAll() -> [Task<Void, Never>] {
+        Array(processingDownloads.values)
+    }
+    
+    // MARK: - Remove
+    
+    func remove(for forURL: URL) {
+        let key = forURL.absoluteString
+        
+        processingDownloads[key] = nil
+    }
+}
+
 final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
     private let store: BackgroundDownloadStore
     private let logger: Logger
+    private let processsingStore: ProcessingDownloadsStore
     
     // MARK: - Init
     
     init(store: BackgroundDownloadStore,
-         logger: Logger) {
+         logger: Logger,
+         processsingStore: ProcessingDownloadsStore = ProcessingDownloadsStore()) {
         self.store = store
         self.logger = logger
+        self.processsingStore = processsingStore
     }
 
     // MARK: - URLSessionDownloadDelegate
@@ -91,10 +115,11 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
         let tempLocation = FileManager.default.temporaryDirectory.appendingPathComponent(location.lastPathComponent)
         try? FileManager.default.moveItem(at: location, to: tempLocation)
 
-        Task {
+        let processingTask = Task {
             defer {
                 Task {
                     await store.removeMetadata(for: fromURL)
+                    await processsingStore.remove(for: fromURL)
                 }
             }
 
@@ -121,6 +146,12 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
                 continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
             }
         }
+        
+        // TODO: Update processing to use a serial queue
+        Task {
+            await processsingStore.store(from: fromURL,
+                                         task: processingTask)
+        }
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -130,23 +161,44 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
 
         logger.info("Download failed for: \(fromURL.absoluteString), error: \(error.localizedDescription)")
 
-        Task {
+        let processingTask = Task {
             let (_, continuation) = await store.retrieveMetadata(for: fromURL)
             continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
             await store.removeMetadata(for: fromURL)
+            await store.removeMetadata(for: fromURL)
+        }
+        
+        // TODO: Update processing to use a serial queue
+        Task {
+            await processsingStore.store(from: fromURL,
+                                         task: processingTask)
         }
     }
 
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         logger.info("Did finish events for background session")
         
-        Task { @MainActor in
-            guard let appDelegate = AppDelegate.shared else {
-                logger.error("App delegate is nil")
-                return
+        Task {
+            await withTaskGroup(of: Void.self) { group in
+                for task in await processsingStore.retrieveAll() {
+                    group.addTask {
+                        await task.value
+                    }
+                }
+                
+                await group.waitForAll()
+                
+                logger.info("All tasks in group completed")
+                
+                await MainActor.run {
+                    guard let appDelegate = AppDelegate.shared else {
+                        logger.error("App delegate is nil")
+                        return
+                    }
+                    
+                    appDelegate.backgroundDownloadsComplete()
+                }
             }
-            
-            appDelegate.backgroundDownloadsComplete()
         }
     }
 }

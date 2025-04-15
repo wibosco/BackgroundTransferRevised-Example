@@ -14,7 +14,7 @@ actor BackgroundDownloadStore {
     
     // MARK: - Singleton
     
-    static let shared = BackgroundDownloadStore()
+    static let shared = BackgroundDownloadStore() // TODO: Should the service be the singleton instead?
     
     // MARK: - Init
     
