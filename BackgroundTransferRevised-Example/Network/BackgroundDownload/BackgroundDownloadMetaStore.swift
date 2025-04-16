@@ -8,17 +8,13 @@
 
 import Foundation
 
-actor BackgroundDownloadStore {
+actor BackgroundDownloadMetaStore {
     private var inMemoryStore: [String: CheckedContinuation<URL, Error>]
     private let persistentStore: UserDefaults
     
-    // MARK: - Singleton
-    
-    static let shared = BackgroundDownloadStore() // TODO: Should the service be the singleton instead?
-    
     // MARK: - Init
     
-    private init() {
+    init() {
         self.inMemoryStore = [String: CheckedContinuation<URL, Error>]()
         self.persistentStore = UserDefaults.standard
     }

@@ -12,6 +12,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     static var shared: AppDelegate?
     
     private var backgroundCompletionHandler: (() -> Void)?
+    private let logger = Logger(subsystem: "com.williamboles",
+                                category: "appDelegate")
                     
     // MARK: - Background
     
@@ -22,6 +24,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
     
     func backgroundDownloadsComplete() {
+        logger.info("Triggering background session completion handler")
+        
         backgroundCompletionHandler?()
         backgroundCompletionHandler = nil
     }

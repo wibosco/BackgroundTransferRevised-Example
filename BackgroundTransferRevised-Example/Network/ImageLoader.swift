@@ -20,7 +20,7 @@ actor ImageLoader {
     // MARK: - Init
     
     init() {
-        self.backgroundDownloader = BackgroundDownloadService()
+        self.backgroundDownloader = BackgroundDownloadService.shared
     }
     
     // MARK: - Load

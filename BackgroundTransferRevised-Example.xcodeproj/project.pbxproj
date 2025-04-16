@@ -12,13 +12,15 @@
 		436CC09B2D8091D300F9E4E2 /* GridItem+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436CC09A2D8091D300F9E4E2 /* GridItem+Layout.swift */; };
 		437CD5102D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437CD50D2D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift */; };
 		437CD5112D94C62800A909A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437CD50E2D94C62800A909A6 /* AppDelegate.swift */; };
+		4395E65E2DB00E4100637803 /* BackgroundDownloadMetaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */; };
+		4395E65F2DB00E4100637803 /* BackgroundDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */; };
+		4395E6632DB00E8300637803 /* BackgroundDownloadProcessingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E6622DB00E8300637803 /* BackgroundDownloadProcessingStore.swift */; };
+		4395E6652DB00ECD00637803 /* BackgroundDownloadDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */; };
 		43D1CF5A2D80860E00AC1ED9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D1CF592D80860E00AC1ED9 /* Preview Assets.xcassets */; };
 		43D1CF642D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF632D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift */; };
 		43D1CF832D808A5000AC1ED9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D1CF7E2D808A5000AC1ED9 /* Assets.xcassets */; };
 		43D1CF842D808A5000AC1ED9 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF802D808A5000AC1ED9 /* ImageLoader.swift */; };
 		43D1CF852D808A5000AC1ED9 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF812D808A5000AC1ED9 /* NetworkService.swift */; };
-		43E208BA2D942444006B7E12 /* BackgroundDownloadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E208B82D942444006B7E12 /* BackgroundDownloadStore.swift */; };
-		43E208BB2D942444006B7E12 /* BackgroundDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E208B92D942444006B7E12 /* BackgroundDownloadService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +41,10 @@
 		437CD50E2D94C62800A909A6 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		437CD50F2D94C62800A909A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		437CD5132D94C66C00A909A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadService.swift; sourceTree = "<group>"; };
+		4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadMetaStore.swift; sourceTree = "<group>"; };
+		4395E6622DB00E8300637803 /* BackgroundDownloadProcessingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadProcessingStore.swift; sourceTree = "<group>"; };
+		4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadDelegator.swift; sourceTree = "<group>"; };
 		43D1CF4F2D80860C00AC1ED9 /* BackgroundTransferRevised-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BackgroundTransferRevised-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D1CF592D80860E00AC1ED9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		43D1CF5F2D80860E00AC1ED9 /* BackgroundTransferRevised-ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BackgroundTransferRevised-ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,8 +52,6 @@
 		43D1CF7E2D808A5000AC1ED9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		43D1CF802D808A5000AC1ED9 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		43D1CF812D808A5000AC1ED9 /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
-		43E208B82D942444006B7E12 /* BackgroundDownloadStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadStore.swift; sourceTree = "<group>"; };
-		43E208B92D942444006B7E12 /* BackgroundDownloadService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +105,17 @@
 				437CD50F2D94C62800A909A6 /* Info.plist */,
 			);
 			path = Application;
+			sourceTree = "<group>";
+		};
+		4395E65D2DB00E4100637803 /* BackgroundDownload */ = {
+			isa = PBXGroup;
+			children = (
+				4395E6622DB00E8300637803 /* BackgroundDownloadProcessingStore.swift */,
+				4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */,
+				4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */,
+				4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */,
+			);
+			path = BackgroundDownload;
 			sourceTree = "<group>";
 		};
 		43D1CF462D80860C00AC1ED9 = {
@@ -170,10 +185,9 @@
 		43D1CF7F2D808A5000AC1ED9 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				4395E65D2DB00E4100637803 /* BackgroundDownload */,
 				43D1CF802D808A5000AC1ED9 /* ImageLoader.swift */,
 				43D1CF812D808A5000AC1ED9 /* NetworkService.swift */,
-				43E208B92D942444006B7E12 /* BackgroundDownloadService.swift */,
-				43E208B82D942444006B7E12 /* BackgroundDownloadStore.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -283,9 +297,11 @@
 				43D1CF852D808A5000AC1ED9 /* NetworkService.swift in Sources */,
 				436CC0982D808CC500F9E4E2 /* CatsView.swift in Sources */,
 				436CC09B2D8091D300F9E4E2 /* GridItem+Layout.swift in Sources */,
-				43E208BA2D942444006B7E12 /* BackgroundDownloadStore.swift in Sources */,
-				43E208BB2D942444006B7E12 /* BackgroundDownloadService.swift in Sources */,
 				437CD5102D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift in Sources */,
+				4395E65E2DB00E4100637803 /* BackgroundDownloadMetaStore.swift in Sources */,
+				4395E65F2DB00E4100637803 /* BackgroundDownloadService.swift in Sources */,
+				4395E6632DB00E8300637803 /* BackgroundDownloadProcessingStore.swift in Sources */,
+				4395E6652DB00ECD00637803 /* BackgroundDownloadDelegator.swift in Sources */,
 				43D1CF842D808A5000AC1ED9 /* ImageLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

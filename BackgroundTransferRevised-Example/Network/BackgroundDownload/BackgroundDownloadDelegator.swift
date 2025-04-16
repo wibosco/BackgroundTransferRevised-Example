@@ -1,105 +1,25 @@
 //
-//  BackgroundDownloadService.swift
-//  BackgroundTransfer-Example
+//  BackgroundDownloadDelegator.swift
+//  BackgroundTransferRevised-Example
 //
-//  Created by William Boles on 26/03/2025.
-//  Copyright © 2025 William Boles. All rights reserved.
+//  Created by William Boles on 16/04/2025.
 //
 
 import Foundation
 import OSLog
-import UIKit
-import SwiftUI
-
-enum BackgroundDownloadError: Error {
-    case missingInstructionsError
-    case fileSystemError(_ underlyingError: Error)
-    case clientError(_ underlyingError: Error)
-    case serverError(_ underlyingResponse: URLResponse?)
-}
-
-actor BackgroundDownloadService {
-    private let session: URLSession
-    private let store: BackgroundDownloadStore
-    private let logger: Logger
-    
-    // MARK: - Init
-    
-    init() {
-        self.store = BackgroundDownloadStore.shared
-        self.logger = Logger(subsystem: "com.williamboles",
-                             category: "background.download")
-        
-        let delegator = BackgroundDownloadDelegator(store: store,
-                                                    logger: logger)
-        let configuration = URLSessionConfiguration.background(withIdentifier: "com.williamboles.background.download.session")
-        configuration.isDiscretionary = false
-        configuration.sessionSendsLaunchEvents = true
-        self.session = URLSession(configuration: configuration,
-                                  delegate: delegator,
-                                  delegateQueue: nil)
-    }
-
-    // MARK: - Download
-    
-    func download(from fromURL: URL,
-                  to toURL: URL) async throws -> URL {
-        return try await withCheckedThrowingContinuation { continuation in
-            logger.info("Scheduling download: \(fromURL.absoluteString)")
-            
-            Task { [store, fromURL, toURL, continuation] in
-                await store.storeMetadata(from: fromURL,
-                                          to: toURL,
-                                          continuation: continuation)
-            }
-
-            let downloadTask = session.downloadTask(with: fromURL)
-            downloadTask.earliestBeginDate = Date().addingTimeInterval(10) // Remove this in production, the delay was added for demonstration purposes only
-            downloadTask.resume()
-        }
-    }
-}
-
-actor ProcessingDownloadsStore {
-    private var processingDownloads = [String: Task<Void, Never>]()
-    
-    // MARK: - Add
-    
-    func store(from fromURL: URL,
-               task: Task<Void, Never>) {
-        let key = fromURL.absoluteString
-        
-        processingDownloads[key] = task
-    }
-    
-    // MARK: - Retrieve
-    
-    func retrieveAll() -> [Task<Void, Never>] {
-        Array(processingDownloads.values)
-    }
-    
-    // MARK: - Remove
-    
-    func remove(for forURL: URL) {
-        let key = forURL.absoluteString
-        
-        processingDownloads[key] = nil
-    }
-}
 
 final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
-    private let store: BackgroundDownloadStore
+    private let metaStore: BackgroundDownloadMetaStore
     private let logger: Logger
-    private let processsingStore: ProcessingDownloadsStore
+    private let processsingStore: BackgroundDownloadProcessingStore
     
     // MARK: - Init
     
-    init(store: BackgroundDownloadStore,
-         logger: Logger,
-         processsingStore: ProcessingDownloadsStore = ProcessingDownloadsStore()) {
-        self.store = store
+    init(metaStore: BackgroundDownloadMetaStore,
+         logger: Logger) {
+        self.metaStore = metaStore
         self.logger = logger
-        self.processsingStore = processsingStore
+        self.processsingStore = BackgroundDownloadProcessingStore()
     }
 
     // MARK: - URLSessionDownloadDelegate
@@ -118,12 +38,12 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
         let processingTask = Task {
             defer {
                 Task {
-                    await store.removeMetadata(for: fromURL)
+                    await metaStore.removeMetadata(for: fromURL)
                     await processsingStore.remove(for: fromURL)
                 }
             }
 
-            let (toURL, continuation) = await store.retrieveMetadata(for: fromURL)
+            let (toURL, continuation) = await metaStore.retrieveMetadata(for: fromURL)
             guard let toURL else {
                 logger.error("Unable to find existing download item for: \(fromURL.absoluteString)")
                 continuation?.resume(throwing: BackgroundDownloadError.missingInstructionsError)
@@ -162,10 +82,10 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
         logger.info("Download failed for: \(fromURL.absoluteString), error: \(error.localizedDescription)")
 
         let processingTask = Task {
-            let (_, continuation) = await store.retrieveMetadata(for: fromURL)
+            let (_, continuation) = await metaStore.retrieveMetadata(for: fromURL)
             continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
-            await store.removeMetadata(for: fromURL)
-            await store.removeMetadata(for: fromURL)
+            await metaStore.removeMetadata(for: fromURL)
+            await metaStore.removeMetadata(for: fromURL)
         }
         
         // TODO: Update processing to use a serial queue
