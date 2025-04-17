@@ -8,6 +8,11 @@
 
 import Foundation
 
+struct BackgroundDownloadMetaData {
+    let toURL: URL
+    let continuation: CheckedContinuation<URL, Error>?
+}
+
 actor BackgroundDownloadMetaStore {
     private var inMemoryStore: [String: CheckedContinuation<URL, Error>]
     private let persistentStore: UserDefaults
@@ -21,31 +26,30 @@ actor BackgroundDownloadMetaStore {
     
     // MARK: - Store
     
-    func storeMetadata(from fromURL: URL,
-                       to toURL: URL,
-                       continuation: CheckedContinuation<URL, Error>) {
-        let key = fromURL.absoluteString
-        
-        inMemoryStore[key] = continuation
-        persistentStore.set(toURL, forKey: key)
+    func storeMetadata(_ metaData: BackgroundDownloadMetaData,
+                       key: String) {
+        inMemoryStore[key] = metaData.continuation
+        persistentStore.set(metaData.toURL, forKey: key)
     }
     
     // MARK: - Retrieve
     
-    func retrieveMetadata(for forURL: URL) -> (URL?, CheckedContinuation<URL, Error>?) {
-        let key = forURL.absoluteString
+    func retrieveMetadata(key: String) -> BackgroundDownloadMetaData? {
+        guard let toURL = persistentStore.url(forKey: key) else {
+            return nil
+        }
         
-        let toURL = persistentStore.url(forKey: key)
         let continuation = inMemoryStore[key]
         
-        return (toURL, continuation)
+        let metaData = BackgroundDownloadMetaData(toURL: toURL,
+                                                  continuation: continuation)
+        
+        return metaData
     }
     
     // MARK: - Remove
     
-    func removeMetadata(for forURL: URL) {
-        let key = forURL.absoluteString
-        
+    func removeMetadata(key: String) {
         inMemoryStore.removeValue(forKey: key)
         persistentStore.removeObject(forKey: key)
     }

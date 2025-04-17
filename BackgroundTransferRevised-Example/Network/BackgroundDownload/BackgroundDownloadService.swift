@@ -12,7 +12,6 @@ import UIKit
 import SwiftUI
 
 enum BackgroundDownloadError: Error {
-    case missingInstructionsError
     case fileSystemError(_ underlyingError: Error)
     case clientError(_ underlyingError: Error)
     case serverError(_ underlyingResponse: URLResponse?)
@@ -36,6 +35,7 @@ actor BackgroundDownloadService {
         
         let delegator = BackgroundDownloadDelegator(metaStore: metaStore,
                                                     logger: logger)
+        
         let configuration = URLSessionConfiguration.background(withIdentifier: "com.williamboles.background.download.session")
         configuration.isDiscretionary = false
         configuration.sessionSendsLaunchEvents = true
@@ -51,15 +51,24 @@ actor BackgroundDownloadService {
         return try await withCheckedThrowingContinuation { continuation in
             logger.info("Scheduling download: \(fromURL.absoluteString)")
             
-            Task { [metaStore, fromURL, toURL, continuation] in
-                await metaStore.storeMetadata(from: fromURL,
-                                          to: toURL,
-                                          continuation: continuation)
-            }
-
+            storeMetadata(from: fromURL,
+                          to: toURL,
+                          continuation: continuation)
+            
             let downloadTask = session.downloadTask(with: fromURL)
             downloadTask.earliestBeginDate = Date().addingTimeInterval(10) // Remove this in production, the delay was added for demonstration purposes only
             downloadTask.resume()
+        }
+    }
+    
+    private func storeMetadata(from fromURL: URL,
+                               to toURL: URL,
+                               continuation: CheckedContinuation<URL, Error>) {
+        Task {
+            let metaData = BackgroundDownloadMetaData(toURL: toURL,
+                                                      continuation: continuation)
+            await metaStore.storeMetadata(metaData,
+                                          key: fromURL.absoluteString)
         }
     }
 }

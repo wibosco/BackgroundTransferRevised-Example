@@ -14,7 +14,7 @@
 		437CD5112D94C62800A909A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437CD50E2D94C62800A909A6 /* AppDelegate.swift */; };
 		4395E65E2DB00E4100637803 /* BackgroundDownloadMetaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */; };
 		4395E65F2DB00E4100637803 /* BackgroundDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */; };
-		4395E6632DB00E8300637803 /* BackgroundDownloadProcessingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E6622DB00E8300637803 /* BackgroundDownloadProcessingStore.swift */; };
+		4395E6632DB00E8300637803 /* BackgroundDownloadTaskStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E6622DB00E8300637803 /* BackgroundDownloadTaskStore.swift */; };
 		4395E6652DB00ECD00637803 /* BackgroundDownloadDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */; };
 		43D1CF5A2D80860E00AC1ED9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D1CF592D80860E00AC1ED9 /* Preview Assets.xcassets */; };
 		43D1CF642D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF632D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift */; };
@@ -43,7 +43,7 @@
 		437CD5132D94C66C00A909A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadService.swift; sourceTree = "<group>"; };
 		4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadMetaStore.swift; sourceTree = "<group>"; };
-		4395E6622DB00E8300637803 /* BackgroundDownloadProcessingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadProcessingStore.swift; sourceTree = "<group>"; };
+		4395E6622DB00E8300637803 /* BackgroundDownloadTaskStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadTaskStore.swift; sourceTree = "<group>"; };
 		4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadDelegator.swift; sourceTree = "<group>"; };
 		43D1CF4F2D80860C00AC1ED9 /* BackgroundTransferRevised-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BackgroundTransferRevised-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D1CF592D80860E00AC1ED9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -110,7 +110,7 @@
 		4395E65D2DB00E4100637803 /* BackgroundDownload */ = {
 			isa = PBXGroup;
 			children = (
-				4395E6622DB00E8300637803 /* BackgroundDownloadProcessingStore.swift */,
+				4395E6622DB00E8300637803 /* BackgroundDownloadTaskStore.swift */,
 				4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */,
 				4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */,
 				4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */,
@@ -300,7 +300,7 @@
 				437CD5102D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift in Sources */,
 				4395E65E2DB00E4100637803 /* BackgroundDownloadMetaStore.swift in Sources */,
 				4395E65F2DB00E4100637803 /* BackgroundDownloadService.swift in Sources */,
-				4395E6632DB00E8300637803 /* BackgroundDownloadProcessingStore.swift in Sources */,
+				4395E6632DB00E8300637803 /* BackgroundDownloadTaskStore.swift in Sources */,
 				4395E6652DB00ECD00637803 /* BackgroundDownloadDelegator.swift in Sources */,
 				43D1CF842D808A5000AC1ED9 /* ImageLoader.swift in Sources */,
 			);
