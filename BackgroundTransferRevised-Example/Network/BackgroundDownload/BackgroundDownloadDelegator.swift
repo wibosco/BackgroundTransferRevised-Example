@@ -10,7 +10,6 @@ import OSLog
 
 final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
     private let metaStore: BackgroundDownloadMetaStore
-    private let taskStore: BackgroundDownloadTaskStore
     private let logger: Logger
     private let processingGroup: DispatchGroup
     
@@ -20,7 +19,6 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
          logger: Logger) {
         self.metaStore = metaStore
         self.logger = logger
-        self.taskStore = BackgroundDownloadTaskStore()
         self.processingGroup = DispatchGroup()
     }
 
