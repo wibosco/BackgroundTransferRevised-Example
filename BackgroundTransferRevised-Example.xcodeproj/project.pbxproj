@@ -3,15 +3,24 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		43D1CF532D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF522D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift */; };
-		43D1CF552D80860C00AC1ED9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF542D80860C00AC1ED9 /* ContentView.swift */; };
-		43D1CF572D80860E00AC1ED9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D1CF562D80860E00AC1ED9 /* Assets.xcassets */; };
+		436CC0972D808CC500F9E4E2 /* CatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436CC0952D808CC400F9E4E2 /* CatsViewModel.swift */; };
+		436CC0982D808CC500F9E4E2 /* CatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436CC0962D808CC400F9E4E2 /* CatsView.swift */; };
+		436CC09B2D8091D300F9E4E2 /* GridItem+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436CC09A2D8091D300F9E4E2 /* GridItem+Layout.swift */; };
+		437CD5102D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437CD50D2D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift */; };
+		437CD5112D94C62800A909A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437CD50E2D94C62800A909A6 /* AppDelegate.swift */; };
+		4395E65E2DB00E4100637803 /* BackgroundDownloadMetaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */; };
+		4395E65F2DB00E4100637803 /* BackgroundDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */; };
+		4395E6632DB00E8300637803 /* BackgroundDownloadTaskStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E6622DB00E8300637803 /* BackgroundDownloadTaskStore.swift */; };
+		4395E6652DB00ECD00637803 /* BackgroundDownloadDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */; };
 		43D1CF5A2D80860E00AC1ED9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D1CF592D80860E00AC1ED9 /* Preview Assets.xcassets */; };
 		43D1CF642D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF632D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift */; };
+		43D1CF832D808A5000AC1ED9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D1CF7E2D808A5000AC1ED9 /* Assets.xcassets */; };
+		43D1CF842D808A5000AC1ED9 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF802D808A5000AC1ED9 /* ImageLoader.swift */; };
+		43D1CF852D808A5000AC1ED9 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D1CF812D808A5000AC1ED9 /* NetworkService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,13 +34,24 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		436CC0952D808CC400F9E4E2 /* CatsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatsViewModel.swift; sourceTree = "<group>"; };
+		436CC0962D808CC400F9E4E2 /* CatsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CatsView.swift; sourceTree = "<group>"; };
+		436CC09A2D8091D300F9E4E2 /* GridItem+Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GridItem+Layout.swift"; sourceTree = "<group>"; };
+		437CD50D2D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTransferRevised_ExampleApp.swift; sourceTree = "<group>"; };
+		437CD50E2D94C62800A909A6 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		437CD50F2D94C62800A909A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		437CD5132D94C66C00A909A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadService.swift; sourceTree = "<group>"; };
+		4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadMetaStore.swift; sourceTree = "<group>"; };
+		4395E6622DB00E8300637803 /* BackgroundDownloadTaskStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadTaskStore.swift; sourceTree = "<group>"; };
+		4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadDelegator.swift; sourceTree = "<group>"; };
 		43D1CF4F2D80860C00AC1ED9 /* BackgroundTransferRevised-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BackgroundTransferRevised-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		43D1CF522D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTransferRevised_ExampleApp.swift; sourceTree = "<group>"; };
-		43D1CF542D80860C00AC1ED9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		43D1CF562D80860E00AC1ED9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		43D1CF592D80860E00AC1ED9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		43D1CF5F2D80860E00AC1ED9 /* BackgroundTransferRevised-ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BackgroundTransferRevised-ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D1CF632D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTransferRevised_ExampleTests.swift; sourceTree = "<group>"; };
+		43D1CF7E2D808A5000AC1ED9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		43D1CF802D808A5000AC1ED9 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
+		43D1CF812D808A5000AC1ED9 /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +72,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		436CC0932D808CC400F9E4E2 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				436CC0942D808CC400F9E4E2 /* Cats */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		436CC0942D808CC400F9E4E2 /* Cats */ = {
+			isa = PBXGroup;
+			children = (
+				436CC0952D808CC400F9E4E2 /* CatsViewModel.swift */,
+				436CC0962D808CC400F9E4E2 /* CatsView.swift */,
+			);
+			path = Cats;
+			sourceTree = "<group>";
+		};
+		436CC0992D8091D300F9E4E2 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				436CC09A2D8091D300F9E4E2 /* GridItem+Layout.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		437CD50C2D94C62800A909A6 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				437CD50D2D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift */,
+				437CD50E2D94C62800A909A6 /* AppDelegate.swift */,
+				437CD50F2D94C62800A909A6 /* Info.plist */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		4395E65D2DB00E4100637803 /* BackgroundDownload */ = {
+			isa = PBXGroup;
+			children = (
+				4395E6622DB00E8300637803 /* BackgroundDownloadTaskStore.swift */,
+				4395E65B2DB00E4100637803 /* BackgroundDownloadService.swift */,
+				4395E65C2DB00E4100637803 /* BackgroundDownloadMetaStore.swift */,
+				4395E6642DB00ECD00637803 /* BackgroundDownloadDelegator.swift */,
+			);
+			path = BackgroundDownload;
+			sourceTree = "<group>";
+		};
 		43D1CF462D80860C00AC1ED9 = {
 			isa = PBXGroup;
 			children = (
@@ -73,9 +139,11 @@
 		43D1CF512D80860C00AC1ED9 /* BackgroundTransferRevised-Example */ = {
 			isa = PBXGroup;
 			children = (
-				43D1CF522D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift */,
-				43D1CF542D80860C00AC1ED9 /* ContentView.swift */,
-				43D1CF562D80860E00AC1ED9 /* Assets.xcassets */,
+				437CD50C2D94C62800A909A6 /* Application */,
+				436CC0992D8091D300F9E4E2 /* Extensions */,
+				436CC0932D808CC400F9E4E2 /* Features */,
+				43D1CF7F2D808A5000AC1ED9 /* Network */,
+				43D1CF7C2D808A5000AC1ED9 /* Resources */,
 				43D1CF582D80860E00AC1ED9 /* Preview Content */,
 			);
 			path = "BackgroundTransferRevised-Example";
@@ -92,9 +160,36 @@
 		43D1CF622D80860E00AC1ED9 /* BackgroundTransferRevised-ExampleTests */ = {
 			isa = PBXGroup;
 			children = (
+				437CD5132D94C66C00A909A6 /* Info.plist */,
 				43D1CF632D80860E00AC1ED9 /* BackgroundTransferRevised_ExampleTests.swift */,
 			);
 			path = "BackgroundTransferRevised-ExampleTests";
+			sourceTree = "<group>";
+		};
+		43D1CF7C2D808A5000AC1ED9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				43D1CF7D2D808A5000AC1ED9 /* Images */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		43D1CF7D2D808A5000AC1ED9 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				43D1CF7E2D808A5000AC1ED9 /* Assets.xcassets */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		43D1CF7F2D808A5000AC1ED9 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				4395E65D2DB00E4100637803 /* BackgroundDownload */,
+				43D1CF802D808A5000AC1ED9 /* ImageLoader.swift */,
+				43D1CF812D808A5000AC1ED9 /* NetworkService.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,7 +238,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					43D1CF4E2D80860C00AC1ED9 = {
 						CreatedOnToolsVersion = 15.2;
@@ -155,7 +250,7 @@
 				};
 			};
 			buildConfigurationList = 43D1CF4A2D80860C00AC1ED9 /* Build configuration list for PBXProject "BackgroundTransferRevised-Example" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -179,7 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				43D1CF5A2D80860E00AC1ED9 /* Preview Assets.xcassets in Resources */,
-				43D1CF572D80860E00AC1ED9 /* Assets.xcassets in Resources */,
+				43D1CF832D808A5000AC1ED9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,8 +292,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43D1CF552D80860C00AC1ED9 /* ContentView.swift in Sources */,
-				43D1CF532D80860C00AC1ED9 /* BackgroundTransferRevised_ExampleApp.swift in Sources */,
+				437CD5112D94C62800A909A6 /* AppDelegate.swift in Sources */,
+				436CC0972D808CC500F9E4E2 /* CatsViewModel.swift in Sources */,
+				43D1CF852D808A5000AC1ED9 /* NetworkService.swift in Sources */,
+				436CC0982D808CC500F9E4E2 /* CatsView.swift in Sources */,
+				436CC09B2D8091D300F9E4E2 /* GridItem+Layout.swift in Sources */,
+				437CD5102D94C62800A909A6 /* BackgroundTransferRevised_ExampleApp.swift in Sources */,
+				4395E65E2DB00E4100637803 /* BackgroundDownloadMetaStore.swift in Sources */,
+				4395E65F2DB00E4100637803 /* BackgroundDownloadService.swift in Sources */,
+				4395E6632DB00E8300637803 /* BackgroundDownloadTaskStore.swift in Sources */,
+				4395E6652DB00ECD00637803 /* BackgroundDownloadDelegator.swift in Sources */,
+				43D1CF842D808A5000AC1ED9 /* ImageLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +330,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -273,7 +378,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -281,6 +386,8 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -289,6 +396,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -330,12 +438,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -348,8 +458,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BackgroundTransferRevised-Example/Preview Content\"";
+				DEVELOPMENT_TEAM = A8RQWWHSHX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "BackgroundTransferRevised-Example/Application/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -362,9 +474,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.williamboles.BackgroundTransferRevised-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -376,8 +491,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BackgroundTransferRevised-Example/Preview Content\"";
+				DEVELOPMENT_TEAM = A8RQWWHSHX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "BackgroundTransferRevised-Example/Application/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -390,27 +507,33 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.williamboles.BackgroundTransferRevised-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
 		43D1CF772D80860E00AC1ED9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "BackgroundTransferRevised-ExampleTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.williamboles.BackgroundTransferRevised-ExampleTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BackgroundTransferRevised-Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BackgroundTransferRevised-Example";
 			};
 			name = Debug;
@@ -418,18 +541,21 @@
 		43D1CF782D80860E00AC1ED9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "BackgroundTransferRevised-ExampleTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.williamboles.BackgroundTransferRevised-ExampleTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BackgroundTransferRevised-Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BackgroundTransferRevised-Example";
 			};
 			name = Release;
