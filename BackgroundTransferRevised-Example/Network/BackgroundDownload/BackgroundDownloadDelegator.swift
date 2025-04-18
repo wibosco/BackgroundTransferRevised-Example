@@ -12,6 +12,7 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
     private let metaStore: BackgroundDownloadMetaStore
     private let taskStore: BackgroundDownloadTaskStore
     private let logger: Logger
+    private let processingGroup: DispatchGroup
     
     // MARK: - Init
     
@@ -20,6 +21,7 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
         self.metaStore = metaStore
         self.logger = logger
         self.taskStore = BackgroundDownloadTaskStore()
+        self.processingGroup = DispatchGroup()
     }
 
     // MARK: - URLSessionDownloadDelegate
@@ -38,12 +40,13 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
         try? FileManager.default.moveItem(at: location,
                                           to: tempLocation)
 
-        let processingTask = Task {
+        processingGroup.enter()
+        metaStore.retrieveMetadata(key: fromURL.absoluteString) { [weak self, logger] metaData in
             defer {
-                cleanUpDownload(forURL: fromURL)
+                self?.metaStore.removeMetadata(key: fromURL.absoluteString)
+                self?.processingGroup.leave()
             }
-
-            let metaData = await metaStore.retrieveMetadata(key: fromURL.absoluteString)
+            
             guard let metaData else {
                 logger.error("Unable to find existing download item for: \(fromURL.absoluteString)")
                 return
@@ -66,12 +69,6 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
                 metaData.continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
             }
         }
-        
-        // TODO: Is this a race condition, where processing task could finish before this Task block is ran?
-        Task {
-            await taskStore.storeTask(processingTask,
-                                      key: fromURL.absoluteString)
-        }
     }
 
     func urlSession(_ session: URLSession,
@@ -84,55 +81,31 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
 
         logger.info("Download failed for: \(fromURL.absoluteString), error: \(error.localizedDescription)")
 
-        let processingTask = Task {
+        processingGroup.enter()
+        metaStore.retrieveMetadata(key: fromURL.absoluteString) { [weak self] metaData in
             defer {
-                cleanUpDownload(forURL: fromURL)
+                self?.metaStore.removeMetadata(key: fromURL.absoluteString)
+                self?.processingGroup.leave()
             }
             
-            let metaData = await metaStore.retrieveMetadata(key: fromURL.absoluteString)
             metaData?.continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
-        }
-        
-        // TODO: Is this a race condition, where processing task could finish before this Task block is ran?
-        Task {
-            await taskStore.storeTask(processingTask,
-                                      key: fromURL.absoluteString)
         }
     }
 
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         logger.info("Did finish events for background session")
-        
-        Task {
-            await withTaskGroup(of: Void.self) { group in
-                for task in await taskStore.retrieveAll() {
-                    group.addTask {
-                        await task.value
-                    }
-                }
                 
-                await group.waitForAll()
-                
-                logger.info("All tasks in group completed")
-                
-                await MainActor.run {
-                    guard let appDelegate = AppDelegate.shared else {
-                        logger.error("App delegate is nil")
-                        return
-                    }
-                    
-                    appDelegate.backgroundDownloadsComplete()
-                }
-            }
-        }
-    }
-    
-    private func cleanUpDownload(forURL url: URL) {
-        Task {
-            let key = url.absoluteString
+        processingGroup.notify(queue: .global()) { [logger] in
+            logger.info("Processing group has finished")
             
-            await metaStore.removeMetadata(key: key)
-            await taskStore.removeTask(key: key)
+            DispatchQueue.main.async {
+                guard let appDelegate = AppDelegate.shared else {
+                    logger.error("App Delegate is nil")
+                    return
+                }
+                
+                appDelegate.backgroundDownloadsComplete()
+            }
         }
     }
 }
