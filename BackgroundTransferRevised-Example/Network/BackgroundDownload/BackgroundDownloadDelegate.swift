@@ -18,14 +18,17 @@ final class BackgroundDownloadDelegate: NSObject, URLSessionDownloadDelegate {
     private let metaStore: BackgroundDownloadMetaStore
     private let logger: Logger
     private let processingGroup: DispatchGroup
+    private let urlSessionDidFinishEventsCompletionHandler: (@Sendable () -> Void)
     
     // MARK: - Init
     
-    init(metaStore: BackgroundDownloadMetaStore) {
+    init(metaStore: BackgroundDownloadMetaStore,
+         urlSessionDidFinishEventsCompletionHandler: @escaping (@Sendable () -> Void)) {
         self.metaStore = metaStore
         self.logger = Logger(subsystem: "com.williamboles",
                              category: "background.download.delegate")
         self.processingGroup = DispatchGroup()
+        self.urlSessionDidFinishEventsCompletionHandler = urlSessionDidFinishEventsCompletionHandler
     }
 
     // MARK: - URLSessionDownloadDelegate
@@ -45,32 +48,32 @@ final class BackgroundDownloadDelegate: NSObject, URLSessionDownloadDelegate {
                                           to: tempLocation)
 
         processingGroup.enter()
-        metaStore.retrieveMetadata(key: fromURL.absoluteString) { [weak self, logger] metadata in
+        metaStore.retrieveMetadata(key: fromURL.absoluteString) { [weak self] metadata in
             defer {
                 self?.metaStore.removeMetadata(key: fromURL.absoluteString)
                 self?.processingGroup.leave()
             }
             
             guard let metadata else {
-                logger.error("Unable to find existing download item for: \(fromURL.absoluteString)")
+                self?.logger.error("Unable to find existing download item for: \(fromURL.absoluteString)")
                 return
             }
 
             guard let response = downloadTask.response as? HTTPURLResponse,
                   response.statusCode == 200 else {
-                logger.error("Unexpected response for: \(fromURL.absoluteString)")
+                self?.logger.error("Unexpected response for: \(fromURL.absoluteString)")
                 metadata.continuation?.resume(throwing: BackgroundDownloadError.serverError(downloadTask.response))
                 return
             }
 
-            logger.info("Download successful for: \(fromURL.absoluteString)")
+            self?.logger.info("Download successful for: \(fromURL.absoluteString)")
 
             do {
                 try FileManager.default.moveItem(at: tempLocation,
                                                  to: metadata.toURL)
                 metadata.continuation?.resume(returning: metadata.toURL)
             } catch {
-                logger.error("File system error while moving file: \(error.localizedDescription)")
+                self?.logger.error("File system error while moving file: \(error.localizedDescription)")
                 metadata.continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
             }
         }
@@ -104,17 +107,10 @@ final class BackgroundDownloadDelegate: NSObject, URLSessionDownloadDelegate {
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         logger.info("Did finish events for background session")
                 
-        processingGroup.notify(queue: .global()) { [logger] in
-            logger.info("Processing group has finished")
+        processingGroup.notify(queue: .global()) { [weak self] in
+            self?.logger.info("Processing group has finished")
             
-            DispatchQueue.main.async {
-                guard let appDelegate = AppDelegate.shared else {
-                    logger.error("App Delegate is nil")
-                    return
-                }
-                
-                appDelegate.backgroundDownloadsComplete()
-            }
+            self?.urlSessionDidFinishEventsCompletionHandler()
         }
     }
 }

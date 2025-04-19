@@ -16,6 +16,8 @@ actor BackgroundDownloadService {
     private let metaStore: BackgroundDownloadMetaStore
     private let logger: Logger
     
+    private var backgroundCompletionHandler: (() -> Void)?
+    
     // MARK: - Singleton
     
     static let shared = BackgroundDownloadService()
@@ -27,7 +29,11 @@ actor BackgroundDownloadService {
         self.logger = Logger(subsystem: "com.williamboles",
                              category: "background.download")
         
-        let delegate = BackgroundDownloadDelegate(metaStore: metaStore)
+        let delegate = BackgroundDownloadDelegate(metaStore: metaStore) {
+            Task {
+                await BackgroundDownloadService.shared.backgroundDownloadsComplete()
+            }
+        }
         
         let configuration = URLSessionConfiguration.background(withIdentifier: "com.williamboles.background.download.session")
         configuration.isDiscretionary = false
@@ -53,5 +59,18 @@ actor BackgroundDownloadService {
             downloadTask.earliestBeginDate = Date().addingTimeInterval(10) // Remove this in production, the delay was added for demonstration purposes only
             downloadTask.resume()
         }
+    }
+    
+    // MARK: - CompletionHandler
+    
+    func saveBackgroundCompletionHandler(_ backgroundCompletionHandler: @escaping (() -> Void)) {
+        self.backgroundCompletionHandler = backgroundCompletionHandler
+    }
+    
+    func backgroundDownloadsComplete() {
+        logger.info("Triggering background session completion handler")
+        
+        backgroundCompletionHandler?()
+        backgroundCompletionHandler = nil
     }
 }
