@@ -8,17 +8,23 @@
 import Foundation
 import OSLog
 
-final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
+enum BackgroundDownloadError: Error {
+    case fileSystemError(_ underlyingError: Error)
+    case clientError(_ underlyingError: Error)
+    case serverError(_ underlyingResponse: URLResponse?)
+}
+
+final class BackgroundDownloadDelegate: NSObject, URLSessionDownloadDelegate {
     private let metaStore: BackgroundDownloadMetaStore
     private let logger: Logger
     private let processingGroup: DispatchGroup
     
     // MARK: - Init
     
-    init(metaStore: BackgroundDownloadMetaStore,
-         logger: Logger) {
+    init(metaStore: BackgroundDownloadMetaStore) {
         self.metaStore = metaStore
-        self.logger = logger
+        self.logger = Logger(subsystem: "com.williamboles",
+                             category: "background.download.delegate")
         self.processingGroup = DispatchGroup()
     }
 
@@ -39,20 +45,21 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
                                           to: tempLocation)
 
         processingGroup.enter()
-        metaStore.retrieveMetadata(key: fromURL.absoluteString) { [weak self, logger] metaData in
+        metaStore.retrieveMetadata(key: fromURL.absoluteString) { [weak self, logger] metadata in
             defer {
                 self?.metaStore.removeMetadata(key: fromURL.absoluteString)
                 self?.processingGroup.leave()
             }
             
-            guard let metaData else {
+            guard let metadata else {
                 logger.error("Unable to find existing download item for: \(fromURL.absoluteString)")
                 return
             }
 
-            guard let response = downloadTask.response as? HTTPURLResponse, response.statusCode == 200 else {
+            guard let response = downloadTask.response as? HTTPURLResponse,
+                  response.statusCode == 200 else {
                 logger.error("Unexpected response for: \(fromURL.absoluteString)")
-                metaData.continuation?.resume(throwing: BackgroundDownloadError.serverError(downloadTask.response))
+                metadata.continuation?.resume(throwing: BackgroundDownloadError.serverError(downloadTask.response))
                 return
             }
 
@@ -60,11 +67,11 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
 
             do {
                 try FileManager.default.moveItem(at: tempLocation,
-                                                 to: metaData.toURL)
-                metaData.continuation?.resume(returning: metaData.toURL)
+                                                 to: metadata.toURL)
+                metadata.continuation?.resume(returning: metadata.toURL)
             } catch {
                 logger.error("File system error while moving file: \(error.localizedDescription)")
-                metaData.continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
+                metadata.continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
             }
         }
     }
@@ -72,21 +79,25 @@ final class BackgroundDownloadDelegator: NSObject, URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession,
                     task: URLSessionTask,
                     didCompleteWithError error: Error?) {
-        guard let error = error,
-              let fromURL = task.originalRequest?.url else {
+        guard let error = error else {
+            return
+        }
+        
+        guard let fromURL = task.originalRequest?.url else {
+            logger.error("Unexpected nil URL for task.")
             return
         }
 
         logger.info("Download failed for: \(fromURL.absoluteString), error: \(error.localizedDescription)")
 
         processingGroup.enter()
-        metaStore.retrieveMetadata(key: fromURL.absoluteString) { [weak self] metaData in
+        metaStore.retrieveMetadata(key: fromURL.absoluteString) { [weak self] metadata in
             defer {
                 self?.metaStore.removeMetadata(key: fromURL.absoluteString)
                 self?.processingGroup.leave()
             }
             
-            metaData?.continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
+            metadata?.continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
         }
     }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct BackgroundDownloadMetaData {
+struct BackgroundDownloadMetadata {
     let toURL: URL
     let continuation: CheckedContinuation<URL, Error>?
 }
@@ -30,18 +30,18 @@ final class BackgroundDownloadMetaStore: @unchecked Sendable {
     
     // MARK: - Store
     
-    func storeMetadata(_ metaData: BackgroundDownloadMetaData,
+    func storeMetadata(_ metadata: BackgroundDownloadMetadata,
                        key: String) {
         queue.async(flags: .barrier) { [weak self] in
-            self?.inMemoryStore[key] = metaData.continuation
-            self?.persistentStore.set(metaData.toURL, forKey: key)
+            self?.inMemoryStore[key] = metadata.continuation
+            self?.persistentStore.set(metadata.toURL, forKey: key)
         }
     }
     
     // MARK: - Retrieve
     
     func retrieveMetadata(key: String,
-                          completionHandler: @escaping (@Sendable (BackgroundDownloadMetaData?) -> ())) {
+                          completionHandler: @escaping (@Sendable (BackgroundDownloadMetadata?) -> ())) {
         return queue.async { [weak self] in
             guard let toURL = self?.persistentStore.url(forKey: key) else {
                 completionHandler(nil)
@@ -50,10 +50,10 @@ final class BackgroundDownloadMetaStore: @unchecked Sendable {
             
             let continuation = self?.inMemoryStore[key]
             
-            let metaData = BackgroundDownloadMetaData(toURL: toURL,
+            let metadata = BackgroundDownloadMetadata(toURL: toURL,
                                                       continuation: continuation)
             
-            completionHandler(metaData)
+            completionHandler(metadata)
         }
     }
     
