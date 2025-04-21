@@ -8,8 +8,8 @@
 import UIKit
 import OSLog
 
-class AppDelegate: NSObject, UIApplicationDelegate {                    
-    // MARK: - Background
+class AppDelegate: NSObject, UIApplicationDelegate {
+    // MARK: - UIApplicationDelegate
     
     func application(_ application: UIApplication,
                      handleEventsForBackgroundURLSession identifier: String,

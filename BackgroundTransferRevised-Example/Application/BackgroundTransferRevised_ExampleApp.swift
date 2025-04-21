@@ -30,7 +30,7 @@ struct BackgroundTransferRevised_ExampleApp: App {
             
             logger.info("Files will be downloaded to: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].absoluteString)")
 
-            //Exit app to test restoring app from a terminated state. Comment out to test restoring app from a suspended state.
+            //Exit app to test restoring app from a terminated state.
             Task {
                 logger.info("Simulating app termination by exit(0)")
 

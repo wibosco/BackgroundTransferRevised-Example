@@ -67,7 +67,7 @@ actor BackgroundDownloadService {
         self.backgroundCompletionHandler = backgroundCompletionHandler
     }
     
-    func backgroundDownloadsComplete() {
+    private func backgroundDownloadsComplete() {
         logger.info("Triggering background session completion handler")
         
         backgroundCompletionHandler?()
