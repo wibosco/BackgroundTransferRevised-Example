@@ -16,13 +16,6 @@ struct BackgroundTransferRevised_ExampleApp: App {
     private let logger = Logger(subsystem: "com.williamboles",
                                 category: "app")
 
-    
-    // MARK: - Init
-    
-    init() {
-        AppDelegate.shared = appDelegate
-    }
-    
     // MARK: - Scene
     
     var body: some Scene {
@@ -37,12 +30,12 @@ struct BackgroundTransferRevised_ExampleApp: App {
             
             logger.info("Files will be downloaded to: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].absoluteString)")
 
-//            //Exit app to test restoring app from a terminated state. Comment out to test restoring app from a suspended state.
-//            Task {
-//                logger.info("Simulating app termination by exit(0)")
-//
-//                exit(0)
-//            }
+            //Exit app to test restoring app from a terminated state.
+            Task {
+                logger.info("Simulating app termination by exit(0)")
+
+                exit(0)
+            }
         }
     }
 }
