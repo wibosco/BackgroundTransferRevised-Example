@@ -13,56 +13,35 @@ struct BackgroundDownloadMetadata {
     let continuation: CheckedContinuation<URL, Error>?
 }
 
-final class BackgroundDownloadMetaStore: @unchecked Sendable {
-    private var inMemoryStore: [String: CheckedContinuation<URL, Error>]
-    private let persistentStore: UserDefaults
-    private let queue: DispatchQueue
-    
-    // MARK: - Init
-    
-    init() {
-        self.inMemoryStore = [String: CheckedContinuation<URL, Error>]()
-        self.persistentStore = UserDefaults.standard
-        self.queue = DispatchQueue(label: "com.williamboles.background.download.service",
-                                   qos: .userInitiated,
-                                   attributes: .concurrent)
-    }
+actor BackgroundDownloadMetaStore {
+    private var inMemoryStore = [String: CheckedContinuation<URL, Error>]()
+    private let persistentStore =  UserDefaults.standard
     
     // MARK: - Store
     
     func storeMetadata(_ metadata: BackgroundDownloadMetadata,
                        key: String) {
-        queue.async(flags: .barrier) { [weak self] in
-            self?.inMemoryStore[key] = metadata.continuation
-            self?.persistentStore.set(metadata.toURL, forKey: key)
-        }
+        inMemoryStore[key] = metadata.continuation
+        persistentStore.set(metadata.toURL, forKey: key)
     }
     
-    // MARK: - Retrieve
-    
-    func retrieveMetadata(key: String,
-                          completionHandler: @escaping (@Sendable (BackgroundDownloadMetadata?) -> ())) {
-        return queue.async { [weak self] in
-            guard let toURL = self?.persistentStore.url(forKey: key) else {
-                completionHandler(nil)
-                return
-            }
-            
-            let continuation = self?.inMemoryStore[key]
-            
-            let metadata = BackgroundDownloadMetadata(toURL: toURL,
-                                                      continuation: continuation)
-            
-            completionHandler(metadata)
+    func retrieveMetadata(key: String) throws -> BackgroundDownloadMetadata {
+        guard let toURL = persistentStore.url(forKey: key) else {
+            throw BackgroundDownloadError.unknownDownload
         }
+        
+        let continuation = inMemoryStore[key]
+        
+        let metadata = BackgroundDownloadMetadata(toURL: toURL,
+                                                  continuation: continuation)
+        
+        return metadata
     }
     
     // MARK: - Remove
     
     func removeMetadata(key: String) {
-        queue.async(flags: .barrier) { [weak self] in
-            self?.inMemoryStore.removeValue(forKey: key)
-            self?.persistentStore.removeObject(forKey: key)
-        }
+        inMemoryStore.removeValue(forKey: key)
+        persistentStore.removeObject(forKey: key)
     }
 }
