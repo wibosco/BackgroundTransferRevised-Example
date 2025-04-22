@@ -30,7 +30,8 @@ actor BackgroundDownloadService: NSObject {
         return session
     }()
     
-    private let metaStore = BackgroundDownloadMetaStore()
+    private var inMemoryStore = [String: CheckedContinuation<URL, Error>]()
+    private let persistentStore =  UserDefaults.standard
     private let logger = Logger(subsystem: "com.williamboles",
                                 category: "background.download")
     
@@ -47,13 +48,8 @@ actor BackgroundDownloadService: NSObject {
         return try await withCheckedThrowingContinuation { continuation in
             logger.info("Scheduling download: \(fromURL.absoluteString)")
             
-            // TODO: Investigate removing metastore in favour of two properties
-            Task {
-                let metadata = BackgroundDownloadMetadata(toURL: toURL,
-                                                          continuation: continuation)
-                await metaStore.storeMetadata(metadata,
-                                              key: fromURL.absoluteString)
-            }
+            inMemoryStore[fromURL.absoluteString] = continuation
+            persistentStore.set(toURL, forKey: fromURL.absoluteString)
                         
             let downloadTask = session.downloadTask(with: fromURL)
             downloadTask.earliestBeginDate = Date().addingTimeInterval(10) // Remove this in production, the delay was added for demonstration purposes only
@@ -86,33 +82,33 @@ actor BackgroundDownloadService: NSObject {
         logger.info("Download request completed for: \(fromURL.absoluteString)")
         
         defer {
-            Task {
-                await metaStore.removeMetadata(key: fromURL.absoluteString)
-            }
+            inMemoryStore.removeValue(forKey: fromURL.absoluteString)
+            persistentStore.removeObject(forKey: fromURL.absoluteString)
         }
         
-        do {
-            let metadata = try await metaStore.retrieveMetadata(key: fromURL.absoluteString)
-            
-            guard let response = task.response as? HTTPURLResponse,
-                  response.statusCode == 200 else {
-                logger.error("Unexpected response for: \(fromURL.absoluteString)")
-                metadata.continuation?.resume(throwing: BackgroundDownloadError.serverError(task.response))
-                return
-            }
-            
-            logger.info("Download successful for: \(fromURL.absoluteString)")
-            
-            do {
-                try FileManager.default.moveItem(at: location,
-                                                 to: metadata.toURL)
-                metadata.continuation?.resume(returning: metadata.toURL)
-            } catch {
-                logger.error("File system error while moving file: \(error.localizedDescription)")
-                metadata.continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
-            }
-        } catch {
+        guard let toURL = persistentStore.url(forKey: fromURL.absoluteString) else {
             logger.error("Unable to find existing download for: \(fromURL.absoluteString)")
+            return
+        }
+        
+        let continuation = inMemoryStore[fromURL.absoluteString]
+        
+        guard let response = task.response as? HTTPURLResponse,
+              response.statusCode == 200 else {
+            logger.error("Unexpected response for: \(fromURL.absoluteString)")
+            continuation?.resume(throwing: BackgroundDownloadError.serverError(task.response))
+            return
+        }
+        
+        logger.info("Download successful for: \(fromURL.absoluteString)")
+        
+        do {
+            try FileManager.default.moveItem(at: location,
+                                             to: toURL)
+            continuation?.resume(returning: toURL)
+        } catch {
+            logger.error("File system error while moving file: \(error.localizedDescription)")
+            continuation?.resume(throwing: BackgroundDownloadError.fileSystemError(error))
         }
     }
     
@@ -129,20 +125,12 @@ actor BackgroundDownloadService: NSObject {
         
         logger.info("Download failed for: \(fromURL.absoluteString), error: \(error.localizedDescription)")
         
-        do {
-            defer {
-                Task {
-                    await metaStore.removeMetadata(key: fromURL.absoluteString)
-                }
-            }
-            
-            let metadata = try await metaStore.retrieveMetadata(key: fromURL.absoluteString)
-            
-            metadata.continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
-            
-        } catch {
-            logger.error("Unable to find existing download for: \(fromURL.absoluteString)")
-        }
+        let continuation = inMemoryStore[fromURL.absoluteString]
+        
+        continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
+        
+        inMemoryStore.removeValue(forKey: fromURL.absoluteString)
+        persistentStore.removeObject(forKey: fromURL.absoluteString)
     }
     
     private func backgroundDownloadsComplete() async {
@@ -160,7 +148,7 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession,
                     downloadTask: URLSessionDownloadTask,
                     didFinishDownloadingTo location: URL) {
-        // File needs moved before method exist as it only guaranteed to exist until that point
+        // File needs moved before method exits, as file is only guaranteed to exist during this method
         let tempLocation = FileManager.default.temporaryDirectory.appendingPathComponent(location.lastPathComponent)
         try? FileManager.default.moveItem(at: location,
                                           to: tempLocation)
