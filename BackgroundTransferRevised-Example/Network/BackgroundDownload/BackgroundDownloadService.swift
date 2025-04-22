@@ -13,6 +13,7 @@ import SwiftUI
 
 enum BackgroundDownloadError: Error {
     case unknownDownload
+    case cancelled
     case fileSystemError(_ underlyingError: Error)
     case clientError(_ underlyingError: Error)
     case serverError(_ underlyingResponse: URLResponse?)
@@ -45,6 +46,11 @@ actor BackgroundDownloadService: NSObject {
     
     func download(from fromURL: URL,
                   to toURL: URL) async throws -> URL {
+        if let existingContinuation = inMemoryStore[fromURL.absoluteString] {
+            existingContinuation.resume(throwing: BackgroundDownloadError.cancelled)
+            cleanUpDownload(forURL: fromURL)
+        }
+        
         return try await withCheckedThrowingContinuation { continuation in
             logger.info("Scheduling download: \(fromURL.absoluteString)")
             
@@ -82,8 +88,7 @@ actor BackgroundDownloadService: NSObject {
         logger.info("Download request completed for: \(fromURL.absoluteString)")
         
         defer {
-            inMemoryStore.removeValue(forKey: fromURL.absoluteString)
-            persistentStore.removeObject(forKey: fromURL.absoluteString)
+            cleanUpDownload(forURL: fromURL)
         }
         
         guard let toURL = persistentStore.url(forKey: fromURL.absoluteString) else {
@@ -129,8 +134,7 @@ actor BackgroundDownloadService: NSObject {
         
         continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
         
-        inMemoryStore.removeValue(forKey: fromURL.absoluteString)
-        persistentStore.removeObject(forKey: fromURL.absoluteString)
+        cleanUpDownload(forURL: fromURL)
     }
     
     private func backgroundDownloadsComplete() async {
@@ -138,6 +142,11 @@ actor BackgroundDownloadService: NSObject {
         
         backgroundCompletionHandler?()
         backgroundCompletionHandler = nil
+    }
+    
+    private func cleanUpDownload(forURL url: URL) {
+        inMemoryStore.removeValue(forKey: url.absoluteString)
+        persistentStore.removeObject(forKey: url.absoluteString)
     }
 }
 
