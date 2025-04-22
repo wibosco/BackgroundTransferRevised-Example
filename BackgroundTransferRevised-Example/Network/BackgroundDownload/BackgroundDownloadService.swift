@@ -12,8 +12,8 @@ import UIKit
 import SwiftUI
 
 enum BackgroundDownloadError: Error {
-    case unknownDownload
     case cancelled
+    case unknownDownload
     case fileSystemError(_ underlyingError: Error)
     case clientError(_ underlyingError: Error)
     case serverError(_ underlyingResponse: URLResponse?)
@@ -33,7 +33,7 @@ actor BackgroundDownloadService: NSObject {
     
     private var activeDownloads = [String: URLSessionDownloadTask]()
     private var inMemoryStore = [String: CheckedContinuation<URL, Error>]()
-    private let persistentStore =  UserDefaults.standard
+    private let persistentStore = UserDefaults.standard
     private let logger = Logger(subsystem: "com.williamboles",
                                 category: "background.download")
     
@@ -42,6 +42,10 @@ actor BackgroundDownloadService: NSObject {
     // MARK: - Singleton
     
     static let shared = BackgroundDownloadService()
+    
+    private override init() {
+        super.init()
+    }
     
     // MARK: - Download
     
