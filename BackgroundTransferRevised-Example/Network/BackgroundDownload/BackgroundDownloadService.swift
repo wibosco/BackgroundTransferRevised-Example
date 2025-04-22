@@ -136,7 +136,6 @@ actor BackgroundDownloadService: NSObject {
         logger.info("Download failed for: \(fromURL.absoluteString), error: \(error.localizedDescription)")
         
         let continuation = inMemoryStore[fromURL.absoluteString]
-        
         continuation?.resume(throwing: BackgroundDownloadError.clientError(error))
         
         cleanUpDownload(forURL: fromURL)
