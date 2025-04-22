@@ -79,7 +79,7 @@ actor BackgroundDownloadService: NSObject {
     }
     
     private func downloadFinished(task: URLSessionDownloadTask,
-                                  downloadedTo location: URL) async {
+                                  downloadedTo location: URL) {
         guard let fromURL = task.originalRequest?.url else {
             logger.error("Unexpected nil URL for download task.")
             return
@@ -118,7 +118,7 @@ actor BackgroundDownloadService: NSObject {
     }
     
     private func downloadComplete(task: URLSessionTask,
-                                  withError error: Error?) async {
+                                  withError error: Error?) {
         guard let error = error else {
             return
         }
