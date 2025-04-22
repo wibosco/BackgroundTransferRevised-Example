@@ -15,7 +15,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      handleEventsForBackgroundURLSession identifier: String,
                      completionHandler: @escaping () -> Void) {
         Task {
-            await BackgroundDownloadService.shared.saveBackgroundCompletionHandler(completionHandler)
+            await BackgroundDownloadService.shared.saveAppPreviewCompletionHandler(completionHandler)
         }
     }
 }

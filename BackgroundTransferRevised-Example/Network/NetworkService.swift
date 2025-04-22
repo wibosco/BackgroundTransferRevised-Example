@@ -32,7 +32,7 @@ actor NetworkService {
     // MARK: - Cats
     
     func retrieveCats() async throws -> [Cat] {
-        let APIKey = "live_yzNvM2rsrxvWpSwtsAWzbSiGoGW175yNLmnO1u5Fh5GMFxbZ9l4C01t9BcP2v6WQ"
+        let APIKey = ""
         
         assert(!APIKey.isEmpty, "Replace this empty string with your API key from: https://thecatapi.com/")
         
