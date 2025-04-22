@@ -31,6 +31,7 @@ actor BackgroundDownloadService: NSObject {
         return session
     }()
     
+    private var activeDownloads = [String: URLSessionDownloadTask]()
     private var inMemoryStore = [String: CheckedContinuation<URL, Error>]()
     private let persistentStore =  UserDefaults.standard
     private let logger = Logger(subsystem: "com.williamboles",
@@ -46,9 +47,9 @@ actor BackgroundDownloadService: NSObject {
     
     func download(from fromURL: URL,
                   to toURL: URL) async throws -> URL {
-        if let existingContinuation = inMemoryStore[fromURL.absoluteString] {
-            existingContinuation.resume(throwing: BackgroundDownloadError.cancelled)
-            cleanUpDownload(forURL: fromURL)
+        if activeDownloads[fromURL.absoluteString] != nil {
+            // cancel existing downloads for this URL
+            cancelDownload(forURL: fromURL)
         }
         
         return try await withCheckedThrowingContinuation { continuation in
@@ -58,9 +59,19 @@ actor BackgroundDownloadService: NSObject {
             persistentStore.set(toURL, forKey: fromURL.absoluteString)
                         
             let downloadTask = session.downloadTask(with: fromURL)
+            activeDownloads[fromURL.absoluteString] = downloadTask
             downloadTask.earliestBeginDate = Date().addingTimeInterval(10) // Remove this in production, the delay was added for demonstration purposes only
             downloadTask.resume()
         }
+    }
+    
+    func cancelDownload(forURL url: URL) {
+        logger.info("Cancelling download for: \(url.absoluteString)")
+        
+        inMemoryStore[url.absoluteString]?.resume(throwing: BackgroundDownloadError.cancelled)
+        activeDownloads[url.absoluteString]?.cancel()
+        
+        cleanUpDownload(forURL: url)
     }
     
     // MARK: - CompletionHandler
@@ -123,6 +134,11 @@ actor BackgroundDownloadService: NSObject {
             return
         }
         
+        if let error = error as? URLError,
+           error.code == .cancelled {
+            return
+        }
+        
         guard let fromURL = task.originalRequest?.url else {
             logger.error("Unexpected nil URL for task.")
             return
@@ -147,6 +163,9 @@ actor BackgroundDownloadService: NSObject {
     private func cleanUpDownload(forURL url: URL) {
         inMemoryStore.removeValue(forKey: url.absoluteString)
         persistentStore.removeObject(forKey: url.absoluteString)
+        activeDownloads.removeValue(forKey: url.absoluteString)
+        
+        persistentStore.synchronize()
     }
 }
 
