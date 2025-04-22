@@ -37,7 +37,7 @@ actor BackgroundDownloadService: NSObject {
     private let logger = Logger(subsystem: "com.williamboles",
                                 category: "background.download")
     
-    private var backgroundCompletionHandler: (() -> Void)?
+    private var appPreviewCompletionHandler: (() -> Void)?
     
     // MARK: - Singleton
     
@@ -77,21 +77,6 @@ actor BackgroundDownloadService: NSObject {
         
         cleanUpDownload(forURL: url)
     }
-    
-    // MARK: - CompletionHandler
-    
-    func saveBackgroundCompletionHandler(_ backgroundCompletionHandler: @escaping (() -> Void)) {
-        self.backgroundCompletionHandler = backgroundCompletionHandler
-    }
-    
-    private func backgroundDownloadsComplete() {
-        logger.info("Triggering background session completion handler")
-        
-        backgroundCompletionHandler?()
-        backgroundCompletionHandler = nil
-    }
-    
-    // MARK: Download
     
     private func downloadFinished(task: URLSessionDownloadTask,
                                   downloadedTo location: URL) async {
@@ -157,19 +142,25 @@ actor BackgroundDownloadService: NSObject {
         cleanUpDownload(forURL: fromURL)
     }
     
-    private func backgroundDownloadsComplete() async {
+    // MARK: - AppPreview
+    
+    func saveAppPreviewCompletionHandler(_ appPreviewCompletionHandler: @escaping (() -> Void)) {
+        self.appPreviewCompletionHandler = appPreviewCompletionHandler
+    }
+    
+    private func backgroundDownloadsComplete() {
         logger.info("All background downloads completed")
         
-        backgroundCompletionHandler?()
-        backgroundCompletionHandler = nil
+        appPreviewCompletionHandler?()
+        appPreviewCompletionHandler = nil
     }
+    
+    // MARK: - Cleanup
     
     private func cleanUpDownload(forURL url: URL) {
         inMemoryStore.removeValue(forKey: url.absoluteString)
         persistentStore.removeObject(forKey: url.absoluteString)
         activeDownloads.removeValue(forKey: url.absoluteString)
-        
-        persistentStore.synchronize()
     }
 }
 
