@@ -32,9 +32,19 @@ actor NetworkService {
     // MARK: - Cats
     
     func retrieveCats() async throws -> [Cat] {
-        let APIKey = ""
+        let APIKey = "" // To get access to the full response, replace this empty string with your API key from: https://thecatapi.com/
         
-        assert(!APIKey.isEmpty, "Replace this empty string with your API key from: https://thecatapi.com/")
+        if APIKey.isEmpty {
+            logger.error("""
+            *******************************************************************************  
+            *******************************************************************************  
+            *******************************************************************************  
+            ******************************* MISSING API KEY *******************************
+            *******************************************************************************  
+            ******************************************************************************* 
+            ******************************************************************************* 
+            """)
+        }
         
         let limitQueryItem = URLQueryItem(name: "limit", value: "50")
         let sizeQueryItem = URLQueryItem(name: "size", value: "thumb")
