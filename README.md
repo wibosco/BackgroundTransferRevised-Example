@@ -3,7 +3,8 @@
 [![License](http://img.shields.io/badge/License-MIT-green.svg?style=flat)](https://github.com/wibosco/BackgroundTransferRevised-Example/blob/main/LICENSE)
 
 # BackgroundTransferRevised-Example
-An example project showing how we can use a background URLSession to keep downloads going even when the app is terminated.
+An example project showing how to use a background URLSession to keep downloads going even when the app is terminated.
 
-In order to run this project, you will need to register with [TheCatAPI](https://thecatapi.com/) to get a `x-api-key` token to access TheCatAPI's API (which the project uses to get its example content). Once you have your `x-api-key`, add it to the proj$
+This project uses [TheCatAPI](https://thecatapi.com/) to populate the app with downloaded images. `TheCatAPI` has an extensive library of freely available cat photos which it shares via a JSON-based API. While free to use, `TheCatAPI` does require you to [register](https://thecatapi.com/signup) to get full access to it's API (limited access is provided without an API key). Once registered you will be given an `x-api-key` token which you can paste as the `APIKey` value in `NetworkService` so that it is sent with each network request.
 
+If you have any trouble getting the project to run, please create an issue.
