@@ -8,12 +8,9 @@
 
 import Foundation
 import OSLog
-import UIKit
-import SwiftUI
 
 enum BackgroundDownloadError: Error {
     case cancelled
-    case unknownDownload
     case fileSystemError(_ underlyingError: Error)
     case clientError(_ underlyingError: Error)
     case serverError(_ underlyingResponse: URLResponse?)

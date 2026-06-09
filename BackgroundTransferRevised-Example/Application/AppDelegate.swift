@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import OSLog
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     private var completionHandler: (() -> Void)?
