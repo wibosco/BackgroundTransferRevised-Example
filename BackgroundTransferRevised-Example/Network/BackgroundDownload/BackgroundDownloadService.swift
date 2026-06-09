@@ -37,7 +37,7 @@ actor BackgroundDownloadService: NSObject {
     private let logger = Logger(subsystem: "com.williamboles",
                                 category: "background.download")
     
-    private var appPreviewCompletionHandler: (() -> Void)?
+    private var appPreviewCompletionHandler: (@Sendable () -> Void)?
     
     // MARK: - Singleton
     
@@ -143,7 +143,7 @@ actor BackgroundDownloadService: NSObject {
     
     // MARK: - AppPreview
     
-    func saveAppPreviewCompletionHandler(_ appPreviewCompletionHandler: @escaping (() -> Void)) {
+    func setAppPreviewCompletionHandler(_ appPreviewCompletionHandler: @escaping (@Sendable () -> Void)) {
         self.appPreviewCompletionHandler = appPreviewCompletionHandler
     }
     
