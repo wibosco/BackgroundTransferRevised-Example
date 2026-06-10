@@ -17,16 +17,7 @@ enum BackgroundDownloadError: Error {
 }
 
 actor BackgroundDownloadService: NSObject {
-    private lazy var session: URLSession = {
-        let configuration = URLSessionConfiguration.background(withIdentifier: "com.williamboles.background.download.session")
-        configuration.isDiscretionary = false
-        configuration.sessionSendsLaunchEvents = true
-        let session = URLSession(configuration: configuration,
-                                 delegate: self,
-                                 delegateQueue: nil)
-        
-        return session
-    }()
+    nonisolated(unsafe) private var session: URLSession!
     
     private var activeDownloads = [String: URLSessionDownloadTask]()
     private var inMemoryStore = [String: CheckedContinuation<URL, Error>]()
@@ -42,6 +33,14 @@ actor BackgroundDownloadService: NSObject {
     
     private override init() {
         super.init()
+        
+        let configuration = URLSessionConfiguration.background(withIdentifier: "com.williamboles.background.download.session")
+        configuration.isDiscretionary = false
+        configuration.sessionSendsLaunchEvents = true
+
+        self.session = URLSession(configuration: configuration,
+                                  delegate: self,
+                                  delegateQueue: nil)
     }
     
     // MARK: - Download

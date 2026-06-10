@@ -20,8 +20,15 @@ struct BackgroundTransferRevised_ExampleApp: App {
     
     var body: some Scene {
         WindowGroup {
-            let catsViewModel = CatsViewModel()
-            CatsView(viewModel: catsViewModel)
+            //As `CatsViewModel` will make a network request on launch which we don't want
+            //when completing background transfers, we show an empty view to prevent that
+            //happening. In a production app you'd want a more robust solution.
+            if scenePhase == .background {
+                EmptyView()
+            } else {
+                let catsViewModel = CatsViewModel()
+                CatsView(viewModel: catsViewModel)
+            }
         }
         .onChange(of: scenePhase) { (_, newPhase) in
             guard newPhase == .background else {
